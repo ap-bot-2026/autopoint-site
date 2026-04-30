@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="AutoPoint — Pointage automatique sécurisé. Matin et après-midi, du lundi au vendredi, sans action de votre part."/>
+<meta name="description" content="AutoPoint — Pointage automatique sécurisé."/>
 <title>AutoPoint — Pointage automatique</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,8 +25,6 @@ body{background:var(--ink);color:var(--text);font-family:'Instrument Sans',sans-
 *:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:4px;}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
 #live{position:absolute;left:-9999px;width:1px;height:1px;}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
-@media(prefers-contrast:high){:root{--muted:#b0c4de;--line:#445;}}
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(79,125,255,.11) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 85% 90%,rgba(34,211,238,.07) 0%,transparent 55%),linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:100% 100%,100% 100%,48px 48px,48px 48px;opacity:.55;}
 .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 20px;}
 .page{display:none;}.page.on{display:block;}
@@ -34,1272 +33,396 @@ nav{position:sticky;top:0;z-index:100;background:rgba(13,15,20,.9);backdrop-filt
 .logo-ring{width:24px;height:24px;border-radius:50%;background:conic-gradient(var(--blue) 0%,var(--cyan) 50%,var(--blue) 100%);animation:spin 4s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .nav-r{display:flex;gap:6px;align-items:center;}
-.nav-txt{font-size:.82rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:8px 10px;border-radius:6px;font-family:inherit;transition:.2s;min-height:var(--touch);display:inline-flex;align-items:center;}
-.nav-txt:hover{color:var(--text);background:var(--ink2);}
-.btn{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:.9rem;padding:0 22px;border-radius:var(--r);border:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--touch);min-width:var(--touch);transition:all .2s;text-decoration:none;letter-spacing:-.01em;white-space:nowrap;}
+.btn{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:.9rem;padding:0 22px;border-radius:var(--r);border:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--touch);transition:all .2s;text-decoration:none;}
 .btn-p{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 0 20px rgba(79,125,255,.3);}
-.btn-p:hover{background:#3d6ae8;border-color:#3d6ae8;transform:translateY(-1px);}
+.btn-p:hover{background:#3d6ae8;transform:translateY(-1px);}
 .btn-g{background:transparent;color:var(--pale);border-color:var(--line);}
 .btn-g:hover{color:var(--text);border-color:var(--muted);}
-.btn-ok{background:var(--green);color:#fff;border-color:var(--green);width:100%;font-size:1rem;}
-.btn-ok:hover{background:#16a34a;transform:translateY(-1px);}
+.btn-ok{background:var(--green);color:#fff;border-color:var(--green);width:100%;}
 .btn-r{background:transparent;color:var(--red);border-color:rgba(239,68,68,.4);}
-.btn-r:hover{background:rgba(239,68,68,.08);}
-.btn-a{background:var(--amber);color:#000;border-color:var(--amber);}
-.btn-a:hover{background:#d97706;}
-.btn-c{background:var(--ink2);color:var(--text2);border-color:var(--line);}
-.btn-c:hover{border-color:var(--blue);color:var(--text);}
+.btn-r:hover{background:rgba(239,68,68,0.1);}
 .btn-full{width:100%;}
 .btn-sm{font-size:.82rem;min-height:38px;padding:0 14px;}
 .btn-xs{font-size:.78rem;min-height:34px;padding:0 10px;}
-.trust-bar{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
-.tbadge{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line);padding:6px 13px;border-radius:100px;}
 .hero{text-align:center;padding:72px 20px 56px;}
-.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(79,125,255,.1);border:1px solid rgba(79,125,255,.3);color:var(--blue2);font-size:.77rem;font-weight:600;padding:5px 14px;border-radius:100px;margin-bottom:24px;letter-spacing:.07em;text-transform:uppercase;}
-.chip-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:blink 2s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-h1.hero-h{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(2rem,5.5vw,4.5rem);font-weight:900;line-height:1.0;letter-spacing:-.04em;margin-bottom:20px;}
+h1.hero-h{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(2rem,5.5vw,4.5rem);font-weight:900;line-height:1.0;margin-bottom:20px;}
 .gr{background:linear-gradient(110deg,var(--blue) 0%,var(--cyan) 60%,var(--blue2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero-sub{font-size:1.05rem;color:var(--pale);max-width:480px;margin:0 auto 32px;line-height:1.75;}
+.hero-sub{font-size:1.05rem;color:var(--pale);max-width:480px;margin:0 auto 32px;}
 .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
-.stats-row{display:flex;justify-content:center;border:1px solid var(--line);border-radius:var(--rl);margin-bottom:64px;overflow:hidden;flex-wrap:wrap;background:var(--ink2);}
-.stat-item{flex:1;min-width:120px;text-align:center;padding:22px 16px;border-right:1px solid var(--line);}
+.stats-row{display:flex;justify-content:center;border:1px solid var(--line);border-radius:var(--rl);margin-bottom:64px;background:var(--ink2);}
+.stat-item{flex:1;text-align:center;padding:22px 16px;border-right:1px solid var(--line);}
 .stat-item:last-child{border-right:none;}
-.sn{font-family:'Cabinet Grotesk',sans-serif;font-size:1.9rem;font-weight:900;color:var(--blue2);display:block;}
-.sl{font-size:.78rem;color:var(--muted);margin-top:2px;}
-.sec-h{font-family:'Cabinet Grotesk',sans-serif;font-size:1.7rem;font-weight:800;text-align:center;margin-bottom:10px;letter-spacing:-.03em;}
+.sec-h{font-family:'Cabinet Grotesk',sans-serif;font-size:1.7rem;font-weight:800;text-align:center;margin-bottom:10px;}
 .sec-s{text-align:center;color:var(--muted);margin-bottom:40px;font-size:.92rem;}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:64px;}
-.step-c{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rl);padding:24px 18px;transition:border-color .2s,transform .2s;}
-.step-c:hover{border-color:var(--blue);transform:translateY(-3px);}
-.step-n{font-family:'Cabinet Grotesk',sans-serif;font-size:2.6rem;font-weight:900;color:rgba(79,125,255,.18);line-height:1;margin-bottom:10px;}
-.step-c h3{font-family:'Cabinet Grotesk',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:7px;}
-.step-c p{font-size:.83rem;color:var(--muted);line-height:1.65;}
+.step-c{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rl);padding:24px 18px;}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:640px;margin:0 auto 64px;}
-.plan-c{background:var(--ink2);border:2px solid var(--line);border-radius:var(--rxl);padding:30px 24px;text-align:center;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;}
-.plan-c:hover{transform:translateY(-4px);}
-.plan-c.best{border-color:var(--blue);box-shadow:0 0 40px rgba(79,125,255,.12);}
-.plan-c.best::before{content:'MEILLEUR PRIX';position:absolute;top:13px;right:-26px;background:var(--blue);color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-size:.58rem;font-weight:800;letter-spacing:.12em;padding:4px 38px;transform:rotate(45deg);}
-.plan-label{font-size:.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:14px;}
-.plan-price{font-family:'Cabinet Grotesk',sans-serif;font-size:2.8rem;font-weight:900;letter-spacing:-.05em;margin-bottom:4px;}
-.plan-old{font-size:.8rem;color:var(--muted);text-decoration:line-through;margin-bottom:2px;}
-.plan-promo{display:inline-block;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);font-size:.7rem;font-weight:700;padding:2px 10px;border-radius:100px;margin-bottom:8px;}
-.plan-period{font-size:.8rem;color:var(--muted);margin-bottom:22px;}
-.plan-feats{list-style:none;text-align:left;margin-bottom:22px;}
-.plan-feats li{font-size:.85rem;color:var(--pale);padding:6px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:flex-start;}
-.plan-feats li:last-child{border-bottom:none;}
-.plan-feats li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:2px;}
+.plan-c{background:var(--ink2);border:2px solid var(--line);border-radius:var(--rxl);padding:30px 24px;text-align:center;position:relative;}
+.plan-c.best{border-color:var(--blue);}
 .auth-wrap{max-width:480px;margin:0 auto 80px;scroll-margin-top:80px;}
 .auth-card{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rxl);overflow:hidden;}
-.sec-bar{display:flex;align-items:center;justify-content:center;gap:14px;padding:9px 16px;background:rgba(34,197,94,.05);border-bottom:1px solid rgba(34,197,94,.15);flex-wrap:wrap;}
-.sec-bar span{font-size:.73rem;color:rgba(134,239,172,.85);display:flex;align-items:center;gap:4px;}
 .tabs-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);}
-.tab-btn{background:transparent;border:none;color:var(--muted);font-family:'Cabinet Grotesk',sans-serif;font-size:.92rem;font-weight:700;padding:0 16px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-1px;min-height:var(--touch);}
-.tab-btn.on{color:var(--text);border-bottom-color:var(--blue);background:rgba(79,125,255,.06);}
+.tab-btn{background:transparent;border:none;color:var(--muted);font-family:inherit;font-weight:700;padding:16px;cursor:pointer;transition:.2s;}
+.tab-btn.on{color:var(--text);border-bottom:3px solid var(--blue);background:rgba(79,125,255,0.06);}
 .fp{padding:24px 28px;}
 .field{margin-bottom:14px;}
-.field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:600;letter-spacing:.02em;}
-.field input,.field select,.field textarea{width:100%;background:var(--ink3);border:2px solid var(--line);border-radius:var(--r);color:var(--text);font-family:'Instrument Sans',sans-serif;font-size:.95rem;padding:10px 13px;outline:none;min-height:var(--touch);transition:border-color .2s,box-shadow .2s;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,125,255,.15);}
-.field input::placeholder{color:var(--muted);}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.divlabel{text-align:center;position:relative;margin:16px 0;}
-.divlabel::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--line);}
-.divlabel span{position:relative;background:var(--ink2);padding:0 10px;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
-.plan-sel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.po{border:2px solid var(--line);border-radius:var(--r);padding:11px;cursor:pointer;text-align:center;background:var(--ink3);transition:all .2s;min-height:68px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;}
-.po:hover{border-color:var(--blue);}
-.po.on{border-color:var(--blue);background:rgba(79,125,255,.1);}
-.po-price{font-family:'Cabinet Grotesk',sans-serif;font-size:1.35rem;font-weight:900;}
-.po-old{font-size:.7rem;color:var(--muted);text-decoration:line-through;}
-.po-lbl{font-size:.7rem;color:var(--muted);}
-.po-save{font-size:.68rem;color:var(--green);font-weight:700;}
-.promo-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:14px;}
-.promo-row .field{flex:1;margin:0;}
-.promo-fb{font-size:.78rem;margin-bottom:10px;padding:8px 10px;border-radius:6px;display:none;}
-.promo-fb.ok{background:rgba(34,197,94,.1);color:#86efac;display:block;}
-.promo-fb.err{background:rgba(239,68,68,.1);color:#fca5a5;display:block;}
-.chk-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;}
-.chk-row input[type=checkbox]{width:20px;height:20px;margin-top:2px;cursor:pointer;accent-color:var(--blue);flex-shrink:0;}
-.chk-row label{font-size:.83rem;color:var(--muted);cursor:pointer;line-height:1.55;}
-.fn{font-size:.77rem;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;}
-.fn button,.fn a{color:var(--blue2);background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;padding:0;text-decoration:underline;}
-.msg{padding:12px 14px;border-radius:var(--r);font-size:.87rem;margin-bottom:14px;display:none;line-height:1.55;}
-.msg.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#86efac;display:block;}
-.msg.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;display:block;}
-.msg.wrn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fcd34d;display:block;}
-#client-dash{padding:24px 28px;}
-.cdash-head{margin-bottom:20px;}
-.cdash-head h2{font-family:'Cabinet Grotesk',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.03em;}
-.cdash-head p{color:var(--muted);font-size:.85rem;margin-top:4px;}
-.countdown-card{background:linear-gradient(135deg,rgba(79,125,255,.1),rgba(34,211,238,.05));border:1px solid rgba(79,125,255,.25);border-radius:var(--rl);padding:24px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;}
-.countdown-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(79,125,255,.07) 0%,transparent 70%);}
-.cd-number{font-family:'Cabinet Grotesk',sans-serif;font-size:3.8rem;font-weight:900;letter-spacing:-.06em;color:var(--blue2);line-height:1;margin-bottom:4px;position:relative;}
-.cd-lbl{font-size:.82rem;color:var(--muted);margin-bottom:13px;position:relative;}
-.pb{background:var(--line);border-radius:100px;height:6px;overflow:hidden;}
-.pb-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .8s ease;}
-.cd-exp{font-size:.76rem;color:var(--muted);margin-top:10px;position:relative;}
-.ainfo{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:14px;font-size:.87rem;line-height:2;}
-.ainfo strong{color:var(--blue2);}
+.field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
+.field input, .field textarea, .field select {width:100%;background:var(--ink3);border:2px solid var(--line);border-radius:var(--r);color:var(--text);padding:10px 13px;outline:none;}
+.msg{padding:12px 14px;border-radius:var(--r);font-size:.87rem;margin-bottom:14px;display:none;}
+.msg.ok{background:rgba(34,197,94,0.1);color:#86efac;display:block;}
+.msg.err{background:rgba(239,68,68,0.1);color:#fca5a5;display:block;}
 .sbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:.76rem;font-weight:700;}
-.sbadge.act{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.3);}
-.sbadge.wait{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.3);}
-.sbadge.exp{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.3);}
-.sbadge.free{background:rgba(34,211,238,.1);color:#67e8f9;border:1px solid rgba(34,211,238,.3);}
-.sdot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-.next-pt{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:.87rem;color:var(--muted);margin-bottom:14px;}
-.next-pt strong{color:var(--text);}
-.absences-card{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:14px;}
-.absences-card h3{font-family:'Cabinet Grotesk',sans-serif;font-size:.88rem;font-weight:700;margin-bottom:10px;color:var(--text2);}
-.abs-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.abs-btn{flex:1;min-width:120px;font-size:.8rem;padding:8px 12px;border-radius:var(--r);border:1px solid var(--line);background:var(--ink2);color:var(--pale);cursor:pointer;font-family:inherit;transition:.2s;min-height:var(--touch);}
-.abs-btn:hover{border-color:var(--amber);color:var(--amber);}
-.abs-btn.absent{background:rgba(245,158,11,.12);border-color:var(--amber);color:var(--amber);}
-.dash-acts{display:flex;flex-direction:column;gap:8px;}
-#admin-dash{padding:24px 28px;}
-.admin-head{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.admin-head h2{font-family:'Cabinet Grotesk',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.03em;}
-.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px;}
-.astat{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:13px;text-align:center;}
-.astat-n{font-family:'Cabinet Grotesk',sans-serif;font-size:1.6rem;font-weight:900;color:var(--blue2);display:block;}
-.astat-l{font-size:.7rem;color:var(--muted);margin-top:2px;}
-.admin-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-.at{background:transparent;border:1px solid var(--line);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:600;padding:0 14px;border-radius:var(--r);cursor:pointer;transition:.2s;min-height:38px;}
-.at.on{background:var(--blue);border-color:var(--blue);color:#fff;}
-.admin-section{display:none;}.admin-section.on{display:block;}
-.filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
-.filter-bar input{flex:1;min-width:150px;background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);color:var(--text);font-family:inherit;font-size:.88rem;padding:9px 12px;outline:none;min-height:var(--touch);transition:border-color .2s;}
-.filter-bar input:focus{border-color:var(--blue);}
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--rl);-webkit-overflow-scrolling:touch;}
-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:580px;}
-thead{background:var(--ink3);}
-th{text-align:left;padding:10px 13px;font-family:'Cabinet Grotesk',sans-serif;font-size:.73rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--line);white-space:nowrap;}
-td{padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--text2);}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,.02);}
-.td-name{font-weight:600;color:var(--text);}
-.td-days{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;}
-.td-days.ok{color:var(--green);}.td-days.wrn{color:var(--amber);}.td-days.exp{color:var(--red);}
-.td-acts{display:flex;gap:5px;flex-wrap:wrap;}
-.promo-admin-card{background:var(--ink3);border:1px solid var(--line);border-radius:var(--rl);padding:20px;margin-bottom:14px;}
-.promo-admin-card h3{font-family:'Cabinet Grotesk',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:14px;}
-.pgen-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px;}
-.pgen-grid .field{margin:0;}
-.promo-item{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;flex-wrap:wrap;gap:8px;}
-.promo-code{font-family:monospace;font-size:.88rem;color:var(--blue2);font-weight:700;letter-spacing:.05em;}
-.promo-meta{font-size:.76rem;color:var(--muted);}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:16px;}
+.sbadge.act{background:rgba(34,197,94,0.12);color:#86efac;}
+.sbadge.wait{background:rgba(245,158,11,0.12);color:#fcd34d;}
+.sbadge.exp{background:rgba(239,68,68,0.1);color:#fca5a5;}
+#admin-dash, #client-dash{padding:24px 28px;}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--rl);}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:600px;}
+th, td{padding:12px;text-align:left;border-bottom:1px solid var(--line);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
 .overlay.on{display:flex;}
-.modal{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rxl);padding:32px;max-width:440px;width:100%;position:relative;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.mcls{position:absolute;top:13px;right:13px;background:transparent;border:1px solid var(--line);color:var(--muted);font-size:1.2rem;cursor:pointer;border-radius:6px;width:var(--touch);height:var(--touch);display:flex;align-items:center;justify-content:center;transition:.2s;}
-.mcls:hover{color:var(--text);border-color:var(--text);}
-.modal h2{font-family:'Cabinet Grotesk',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:10px;letter-spacing:-.03em;}
-.modal p{color:var(--muted);font-size:.87rem;margin-bottom:16px;line-height:1.65;}
-.cbox{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;font-size:.87rem;line-height:1.9;white-space:pre-wrap;}
-.cbox strong{color:var(--blue2);}
-.cbox code{background:rgba(79,125,255,.12);color:var(--blue2);padding:2px 8px;border-radius:4px;font-size:.81rem;cursor:pointer;border:1px solid rgba(79,125,255,.2);font-family:monospace;}
-.warn-box{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);border-radius:var(--r);padding:13px;margin-bottom:14px;font-size:.87rem;color:#fca5a5;line-height:1.6;}
-.warn-box strong{color:var(--red);}
-.mbtns{display:flex;gap:10px;}
-.reassurance{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
-.rea-badge{flex:1;min-width:90px;background:rgba(79,125,255,.06);border:1px solid rgba(79,125,255,.15);border-radius:var(--r);padding:10px;text-align:center;font-size:.75rem;color:var(--pale);}
-.rea-icon{font-size:1.3rem;display:block;margin-bottom:4px;}
-.copy-btn{background:var(--ink2);border:1px solid var(--line);color:var(--pale);padding:0 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.78rem;transition:.2s;min-height:var(--touch);display:inline-flex;align-items:center;gap:6px;}
-.copy-btn:hover{border-color:var(--blue);color:var(--blue2);}
-.lp{max-width:740px;margin:36px auto;padding:0 20px 80px;position:relative;z-index:1;}
-.lp h1{font-family:'Cabinet Grotesk',sans-serif;font-size:1.9rem;font-weight:900;margin-bottom:8px;letter-spacing:-.04em;}
-.lp-date{color:var(--muted);font-size:.8rem;margin-bottom:36px;display:block;}
-.lp h2{font-family:'Cabinet Grotesk',sans-serif;font-size:1.05rem;font-weight:800;margin:28px 0 10px;color:var(--blue2);padding-top:4px;border-top:1px solid var(--line);}
-.lp p,.lp li{font-size:.9rem;color:#8899aa;line-height:1.82;margin-bottom:10px;}
-.lp ul{padding-left:18px;margin-bottom:10px;}
-.lp .hl{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);padding:14px 18px;margin:16px 0;}
-.lp .hl p{color:#fca5a5;margin:0;}
-.back-btn{display:inline-flex;align-items:center;gap:8px;color:var(--blue2);font-size:.86rem;cursor:pointer;margin-bottom:28px;background:none;border:none;font-family:inherit;padding:0;min-height:var(--touch);}
-.back-btn:hover{text-decoration:underline;}
-footer{border-top:1px solid var(--line);padding:24px 32px;text-align:center;color:var(--muted);font-size:.8rem;position:relative;z-index:1;}
-footer button{color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;padding:3px 4px;transition:.2s;min-height:var(--touch);}
-footer button:hover{color:var(--text);}
-.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
-@keyframes fup{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.hero>*{animation:fup .5s ease both;}
-.hero .chip{animation-delay:.05s;}
-.hero h1{animation-delay:.13s;}
-.hero .hero-sub{animation-delay:.2s;}
-.hero .hero-cta{animation-delay:.27s;}
-.hero .trust-bar{animation-delay:.34s;}
-@media(max-width:640px){
-  nav{padding:0 14px;}
-  .nav-txt{display:none;}
-  .fp,#client-dash,#admin-dash{padding:18px;}
-  .modal{padding:20px;}
-  .row2{grid-template-columns:1fr;}
-  .td-acts{flex-direction:column;}
-  .stats-row{border-radius:var(--r);}
-  .stat-item{border-right:none;border-bottom:1px solid var(--line);}
-  .stat-item:last-child{border-bottom:none;}
-  .mbtns{flex-direction:column;}
-}
+.modal{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rxl);padding:32px;max-width:440px;width:90%;}
+.cbox{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;white-space:pre-wrap;font-size:.87rem;}
+footer{border-top:1px solid var(--line);padding:40px 20px;text-align:center;color:var(--muted);font-size:.8rem;}
+@media(max-width:640px){.nav-r .btn-g, .nav-r .nav-txt{display:none;}}
 </style>
 </head>
 <body>
 <div class="bg" aria-hidden="true"></div>
-<a href="#main" class="skip">Aller au contenu principal</a>
-<div id="live" aria-live="polite" aria-atomic="true" role="status"></div>
+<div id="live" aria-live="polite" class="sr"></div>
 
-<nav role="navigation" aria-label="Navigation principale">
-  <button class="logo" onclick="showPage('home')" aria-label="AutoPoint — Retour accueil">
-    <div class="logo-ring" aria-hidden="true"></div>AutoPoint
-  </button>
+<nav>
+  <button class="logo" onclick="showPage('home')"><div class="logo-ring"></div>AutoPoint</button>
   <div class="nav-r">
-    <button class="nav-txt" onclick="showPage('cgu')">CGU</button>
-    <button class="nav-txt" onclick="showPage('legal')">Mentions légales</button>
-    <button class="btn btn-g" id="btn-nav-login" onclick="showPage('home');switchTab('login');scrollToAuth()">Connexion</button>
-    <button class="btn btn-p" id="btn-nav-reg" onclick="showPage('home');switchTab('reg');scrollToAuth()">S'inscrire</button>
+    <button class="btn btn-g" id="nav-login" onclick="showPage('home');switchTab('login');scrollToAuth()">Connexion</button>
+    <button class="btn btn-p" id="nav-reg" onclick="showPage('home');switchTab('reg');scrollToAuth()">S'inscrire</button>
+    <button class="btn btn-r btn-sm" id="nav-logout" style="display:none" onclick="doLogout()">Déconnexion</button>
   </div>
 </nav>
 
-<!-- PAGE HOME -->
-<div id="page-home" class="page on" role="main" id="main">
+<div id="page-home" class="page on">
 <div class="wrap">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="chip"><span class="chip-dot" aria-hidden="true"></span>Pointage 100% automatique</div>
-    <h1 class="hero-h" id="hero-title">Arrêtez de pointer<br/><span class="gr">manuellement.</span></h1>
-    <p class="hero-sub">AutoPoint pointe à votre place chaque matin à 8h et chaque après-midi à 13h, du lundi au vendredi — sans aucune action de votre part.</p>
-    <div class="hero-cta">
-      <button class="btn btn-p" onclick="switchTab('reg');scrollToAuth()">Démarrer dès 10€/mois</button>
-      <button class="btn btn-g" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">Comment ça marche</button>
-    </div>
-    <div class="trust-bar" role="list" aria-label="Indicateurs de confiance">
-      <div class="tbadge" role="listitem">🔒 Données chiffrées</div>
-      <div class="tbadge" role="listitem">🛡️ Aucune revente</div>
-      <div class="tbadge" role="listitem">✅ Sans engagement</div>
-      <div class="tbadge" role="listitem">📋 Résiliation simple</div>
+  <section class="hero">
+    <h1 class="hero-h">Oubliez le pointage.<br/><span class="gr">C'est automatique.</span></h1>
+    <p class="hero-sub">AutoPoint valide votre présence chaque matin à 8h et après-midi à 13h, du lundi au vendredi.</p>
+    <div class="hero-cta" id="main-cta">
+      <button class="btn btn-p" onclick="switchTab('reg');scrollToAuth()">Démarrer maintenant</button>
     </div>
   </section>
 
-  <div class="stats-row" role="region" aria-label="Chiffres clés">
-    <div class="stat-item"><span class="sn">2×</span><span class="sl">Par jour</span></div>
-    <div class="stat-item"><span class="sn">5j/7</span><span class="sl">Lun–Ven</span></div>
-    <div class="stat-item"><span class="sn">0</span><span class="sl">Action requise</span></div>
-    <div class="stat-item"><span class="sn">10€</span><span class="sl">Par mois</span></div>
+  <div class="plans">
+    <div class="plan-c">
+      <h3>Mensuel</h3>
+      <div style="font-size:2.5rem;font-weight:900;margin:15px 0;">10€</div>
+      <p style="color:var(--muted);margin-bottom:20px;">par mois</p>
+      <button class="btn btn-p btn-full btn-buy" onclick="handleBuy('mensuel')">Choisir</button>
+    </div>
+    <div class="plan-c best">
+      <h3 style="color:var(--blue2)">Trimestriel</h3>
+      <div style="font-size:2.5rem;font-weight:900;margin:15px 0;">25€</div>
+      <p style="color:var(--muted);margin-bottom:20px;">25€ / 3 mois</p>
+      <button class="btn btn-p btn-full btn-buy" onclick="handleBuy('trimestriel')">Choisir</button>
+    </div>
   </div>
 
-  <section id="how" aria-labelledby="how-title">
-    <h2 class="sec-h" id="how-title">Comment ça marche</h2>
-    <p class="sec-s">Quatre étapes. Une seule fois.</p>
-    <div class="steps">
-      <article class="step-c"><div class="step-n" aria-hidden="true">01</div><h3>Inscription sécurisée</h3><p>Créez votre compte en moins de 2 minutes.</p></article>
-      <article class="step-c"><div class="step-n" aria-hidden="true">02</div><h3>Vos identifiants</h3><p>Renseignez votre login et mot de passe du portail. Stockés chiffrés.</p></article>
-      <article class="step-c"><div class="step-n" aria-hidden="true">03</div><h3>Paiement simple</h3><p>Instructions affichées directement. Activation sous 24h.</p></article>
-      <article class="step-c"><div class="step-n" aria-hidden="true">04</div><h3>Tout automatique</h3><p>Votre présence est validée chaque jour ouvrable. Rien à faire.</p></article>
-    </div>
-  </section>
-
-  <section aria-labelledby="plans-title">
-    <h2 class="sec-h" id="plans-title">Tarifs</h2>
-    <p class="sec-s">Sans engagement. Résiliez à tout moment.</p>
-    <div class="plans">
-      <article class="plan-c">
-        <p class="plan-label">Mensuel</p>
-        <div class="plan-price">10€</div>
-        <p class="plan-period">par mois</p>
-        <ul class="plan-feats">
-          <li>Pointage matin &amp; après-midi</li>
-          <li>Du lundi au vendredi</li>
-          <li>Activation sous 24h</li>
-          <li>Résiliation simple</li>
-        </ul>
-        <button class="btn btn-p btn-full btn-sm" onclick="switchTab('reg');selectPlan('mensuel');scrollToAuth()">Choisir</button>
-      </article>
-      <article class="plan-c best">
-        <p class="plan-label">Trimestriel</p>
-        <p class="plan-old">30€</p>
-        <div class="plan-price">25€</div>
-        <span class="plan-promo">🎉 −5€ offerts</span>
-        <p class="plan-period">par trimestre · 8,33€/mois</p>
-        <ul class="plan-feats">
-          <li>Pointage matin &amp; après-midi</li>
-          <li>Du lundi au vendredi</li>
-          <li>Activation sous 24h</li>
-          <li>Résiliation simple</li>
-          <li>Économisez 5€ vs mensuel×3</li>
-        </ul>
-        <button class="btn btn-p btn-full btn-sm" onclick="switchTab('reg');selectPlan('trimestriel');scrollToAuth()">Choisir</button>
-      </article>
-    </div>
-  </section>
-
-  <section id="auth" class="auth-wrap" aria-labelledby="auth-title">
-    <h2 class="sec-h" id="auth-title">Votre espace</h2>
-    <p class="sec-s">Connexion ou inscription en 30 secondes.</p>
-    <div class="auth-card">
-      <div class="sec-bar" role="note">
-        <span>🔒 Connexion sécurisée</span>
-        <span>🛡️ Données chiffrées</span>
-        <span>✅ Sans engagement</span>
-      </div>
-      <div class="tabs-row" role="tablist">
-        <button class="tab-btn on" id="tab-login" role="tab" aria-selected="true" aria-controls="pnl-login" onclick="switchTab('login')">Connexion</button>
-        <button class="tab-btn"    id="tab-reg"   role="tab" aria-selected="false" aria-controls="pnl-reg"    onclick="switchTab('reg')">Inscription</button>
+  <section id="auth" class="auth-wrap">
+    <div class="auth-card" id="auth-card-main">
+      <div class="tabs-row" id="auth-tabs">
+        <button class="tab-btn on" id="tab-login" onclick="switchTab('login')">Connexion</button>
+        <button class="tab-btn" id="tab-reg" onclick="switchTab('reg')">Inscription</button>
       </div>
 
-      <!-- LOGIN -->
-      <div id="pnl-login" class="fp" role="tabpanel" aria-labelledby="tab-login">
-        <div id="msg-login" class="msg" role="alert" aria-live="assertive"></div>
-        <div class="field"><label for="l-ps">Pseudo</label><input type="text" id="l-ps" autocomplete="username" placeholder="votre_pseudo" aria-required="true"/></div>
-        <div class="field"><label for="l-pw">Mot de passe</label><input type="password" id="l-pw" autocomplete="current-password" placeholder="••••••••" aria-required="true"/></div>
-        <button class="btn btn-ok" onclick="doLogin()">Se connecter</button>
-        <p class="fn">
-          Mot de passe oublié ? <button onclick="switchTab('reset')" aria-label="Réinitialiser avec mon PIN">Réinitialiser avec mon PIN</button><br/>
-          Pas de compte ? <button onclick="switchTab('reg')">S'inscrire</button>
-        </p>
+      <div id="pnl-login" class="fp">
+        <div id="msg-login" class="msg"></div>
+        <div class="field"><label>Pseudo</label><input type="text" id="l-ps"></div>
+        <div class="field"><label>Mot de passe</label><input type="password" id="l-pw"></div>
+        <button class="btn btn-ok btn-full" onclick="doLogin()">Se connecter</button>
       </div>
 
-      <!-- REGISTER -->
-      <div id="pnl-reg" class="fp" role="tabpanel" aria-labelledby="tab-reg" style="display:none;">
-        <div id="msg-reg" class="msg" role="alert" aria-live="assertive"></div>
-        <div class="row2">
-          <div class="field"><label for="r-fn">Prénom *</label><input type="text" id="r-fn" autocomplete="given-name" placeholder="Marie" aria-required="true"/></div>
-          <div class="field"><label for="r-ln">Nom *</label><input type="text" id="r-ln" autocomplete="family-name" placeholder="Dupont" aria-required="true"/></div>
+      <div id="pnl-reg" class="fp" style="display:none">
+        <div id="msg-reg" class="msg"></div>
+        <div class="field"><label>Pseudo *</label><input type="text" id="r-ps"></div>
+        <div class="field"><label>Email *</label><input type="email" id="r-em"></div>
+        <div class="field"><label>Login Portail *</label><input type="text" id="r-gl"></div>
+        <div class="field"><label>Mdp Portail *</label><input type="password" id="r-gp"></div>
+        <div class="field"><label>Mdp AutoPoint *</label><input type="password" id="r-pw"></div>
+        <div class="field"><label>PIN (4 chiffres) *</label><input type="text" id="r-pin" maxlength="4"></div>
+        <button class="btn btn-ok btn-full" onclick="doRegister()">Créer mon compte</button>
+      </div>
+
+      <div id="client-dash" style="display:none">
+        <h2 id="cd-welcome">Bonjour !</h2>
+        <div style="background:var(--ink3);padding:20px;border-radius:var(--r);margin:20px 0;text-align:center;">
+          <div id="cd-days" style="font-size:3rem;font-weight:900;color:var(--blue2)">--</div>
+          <div id="cd-status">Jours restants</div>
         </div>
-        <div class="field"><label for="r-ps">Pseudo *</label><input type="text" id="r-ps" autocomplete="username" placeholder="marie.d" aria-required="true"/></div>
-        <div class="field"><label for="r-em">Email *</label><input type="email" id="r-em" autocomplete="email" placeholder="marie@exemple.fr" aria-required="true"/></div>
-        <div class="divlabel"><span>Identifiants portail</span></div>
-        <div class="field"><label for="r-gl">Login Guinot *</label><input type="text" id="r-gl" placeholder="Votre login" aria-required="true"/></div>
-        <div class="field"><label for="r-gp">Mot de passe Guinot *</label><input type="password" id="r-gp" placeholder="••••••••" aria-required="true"/></div>
-        <div class="divlabel"><span>Formule</span></div>
-        <div class="plan-sel" role="group" aria-label="Choisir une formule">
-          <div class="po" id="po-mensuel" onclick="selectPlan('mensuel')" role="radio" aria-checked="false" tabindex="0" onkeypress="if(event.key==='Enter'||event.key===' ')selectPlan('mensuel')">
-            <span class="po-price">10€</span><span class="po-lbl">/ mois</span>
-          </div>
-          <div class="po on" id="po-trimestriel" onclick="selectPlan('trimestriel')" role="radio" aria-checked="true" tabindex="0" onkeypress="if(event.key==='Enter'||event.key===' ')selectPlan('trimestriel')">
-            <span class="po-price" id="po-t-pr">25€</span>
-            <span class="po-old" id="po-t-old" style="display:none;"></span>
-            <span class="po-lbl">/ trimestre ★</span>
-            <span class="po-save" id="po-t-save"></span>
+        
+        <div class="field"><button class="btn btn-p btn-full" onclick="openModal('payment')">💳 Gérer mon abonnement</button></div>
+        
+        <div style="border-top:1px solid var(--line);padding-top:20px;margin-top:20px;">
+          <h3>Absence aujourd'hui</h3>
+          <div style="display:flex;gap:10px;margin:10px 0;">
+            <button class="btn btn-g btn-sm" id="abs-am" onclick="toggleAbsence('AM')">Matin</button>
+            <button class="btn btn-g btn-sm" id="abs-pm" onclick="toggleAbsence('PM')">Après-midi</button>
           </div>
         </div>
-        <div class="divlabel"><span>Code promo (facultatif)</span></div>
-        <div class="promo-row">
-          <div class="field"><label for="r-promo">Code de réduction</label><input type="text" id="r-promo" placeholder="PROMO2026" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"/></div>
-          <button class="btn btn-g btn-sm" onclick="applyPromo()">Appliquer</button>
+
+        <div style="border-top:1px solid var(--line);padding-top:20px;margin-top:20px;">
+          <h3>Paramètres du compte</h3>
+          <div class="field"><label>Nouveau Mdp AutoPoint</label><input type="password" id="up-pw" placeholder="Laisser vide si inchangé"></div>
+          <div class="field"><label>Nouveau Mdp Portail</label><input type="password" id="up-gp" placeholder="Laisser vide si inchangé"></div>
+          <div class="field"><label>Confirmer avec Mdp actuel</label><input type="password" id="up-verify" placeholder="Requis"></div>
+          <button class="btn btn-g btn-full" onclick="updateProfile()">Sauvegarder les changements</button>
+          <div id="msg-up" class="msg" style="margin-top:10px;"></div>
         </div>
-        <div id="promo-fb" class="promo-fb" aria-live="polite"></div>
-        <div class="divlabel"><span>Sécurité du compte</span></div>
-        <div class="field"><label for="r-pw">Mot de passe AutoPoint * <span style="font-weight:400;color:var(--muted);">(8 car. min)</span></label><input type="password" id="r-pw" autocomplete="new-password" placeholder="8 caractères minimum" aria-required="true"/></div>
-        <div class="field"><label for="r-pw2">Confirmer *</label><input type="password" id="r-pw2" autocomplete="new-password" placeholder="••••••••" aria-required="true"/></div>
-        <div class="field"><label for="r-pin">PIN de récupération * <span style="font-weight:400;color:var(--muted);">(4 chiffres, en cas d'oubli)</span></label><input type="text" id="r-pin" inputmode="numeric" maxlength="4" placeholder="••••" aria-required="true"/></div>
-        <div class="chk-row">
-          <input type="checkbox" id="cgu-ok" aria-required="true"/>
-          <label for="cgu-ok">J'accepte les <button onclick="showPage('cgu')" style="color:var(--blue2);background:none;border:none;cursor:pointer;font-size:inherit;padding:0;text-decoration:underline;">CGU</button> et suis seul responsable de l'usage de ce service.</label>
-        </div>
-        <button class="btn btn-ok" onclick="doRegister()">Créer mon compte →</button>
-        <p class="fn">🔒 Mots de passe hachés · Identifiants chiffrés · Aucune revente</p>
+        
+        <button class="btn btn-r btn-full" style="margin-top:20px" onclick="doLogout()">Déconnexion</button>
       </div>
 
-      <!-- RESET PIN -->
-      <div id="pnl-reset" class="fp" role="tabpanel" style="display:none;">
-        <div id="msg-reset" class="msg" role="alert" aria-live="assertive"></div>
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;">Entrez votre pseudo, votre PIN à 4 chiffres et votre nouveau mot de passe.</p>
-        <div class="field"><label for="rs-ps">Pseudo</label><input type="text" id="rs-ps" autocomplete="username" placeholder="votre_pseudo" aria-required="true"/></div>
-        <div class="field"><label for="rs-pin">PIN (4 chiffres)</label><input type="text" id="rs-pin" inputmode="numeric" maxlength="4" placeholder="••••" aria-required="true"/></div>
-        <div class="field"><label for="rs-pw">Nouveau mot de passe</label><input type="password" id="rs-pw" autocomplete="new-password" placeholder="8 caractères minimum" aria-required="true"/></div>
-        <div class="field"><label for="rs-pw2">Confirmer</label><input type="password" id="rs-pw2" autocomplete="new-password" placeholder="••••••••" aria-required="true"/></div>
-        <button class="btn btn-ok" onclick="doResetPin()">Réinitialiser mon mot de passe</button>
-        <p class="fn"><button onclick="switchTab('login')">← Retour à la connexion</button></p>
-      </div>
+      <div id="admin-dash" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2>🛡️ Administration</h2>
+          <button class="btn btn-r btn-sm" onclick="doLogout()">Déconnexion</button>
+        </div>
+        
+        <div class="admin-tabs" style="display:flex;gap:10px;margin-bottom:20px;">
+          <button class="btn btn-g btn-sm" onclick="swAdmin('users')">Utilisateurs</button>
+          <button class="btn btn-g btn-sm" onclick="swAdmin('pay')">Paiements</button>
+        </div>
 
-      <!-- CLIENT DASHBOARD -->
-      <div id="client-dash" style="display:none;" aria-label="Tableau de bord">
-        <div class="cdash-head">
-          <h2>Bonjour, <span id="cd-name">—</span> 👋</h2>
-          <p>Votre espace AutoPoint</p>
-        </div>
-        <div class="countdown-card" aria-live="polite">
-          <div class="cd-number" id="cd-days">—</div>
-          <div class="cd-lbl" id="cd-lbl">jours restants</div>
-          <div class="pb" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="pb-wrap">
-            <div class="pb-fill" id="pb-fill" style="width:0%"></div>
-          </div>
-          <div class="cd-exp" id="cd-exp"></div>
-        </div>
-        <div class="ainfo">
-          <div>Pseudo : <strong id="cd-pseudo">—</strong></div>
-          <div>Email : <strong id="cd-email">—</strong></div>
-          <div>Login portail : <strong id="cd-portal">—</strong></div>
-          <div>Formule : <strong id="cd-plan">—</strong></div>
-          <div style="margin-top:6px;">Statut : <span id="cd-sbadge" class="sbadge act" role="status"><span class="sdot" aria-hidden="true"></span><span id="cd-stxt">Actif</span></span></div>
-        </div>
-        <div class="next-pt">⏰ Prochain pointage : <strong id="cd-next">—</strong></div>
-        <div class="absences-card">
-          <h3>Déclarer une absence aujourd'hui</h3>
-          <p style="font-size:.77rem;color:var(--muted);margin-bottom:10px;">Désactivez le pointage pour la session concernée si vous êtes absent.</p>
-          <div class="abs-btns" role="group">
-            <button class="abs-btn" id="abs-am" onclick="toggleAbsence('AM')" aria-pressed="false">🌅 Ce matin (9h00)</button>
-            <button class="abs-btn" id="abs-pm" onclick="toggleAbsence('PM')" aria-pressed="false">🌇 Cet après-midi (14h00)</button>
+        <div id="as-users">
+          <input type="text" id="asearch" placeholder="🔍 Rechercher..." oninput="filterAdmin()" style="width:100%;margin-bottom:10px;padding:10px;background:var(--ink3);border:1px solid var(--line);color:#fff;border-radius:var(--r);">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Pseudo</th><th>Statut</th><th>Fin</th><th>Actions</th></tr></thead>
+              <tbody id="atbody"></tbody>
+            </table>
           </div>
         </div>
-        <div class="dash-acts">
-          <button class="btn btn-c btn-full" id="btn-renew" style="display:none;" onclick="openModal('payment')">↻ Renouveler mon abonnement</button>
-          <button class="btn btn-a btn-full" onclick="openModal('cancel')">Résilier mon abonnement</button>
-          <button class="btn btn-full" style="background:transparent;border:2px solid rgba(239,68,68,.3);color:var(--red);min-height:var(--touch);font-family:'Cabinet Grotesk',sans-serif;font-weight:700;border-radius:var(--r);cursor:pointer;" onclick="openModal('delete')">Supprimer mon compte (RGPD)</button>
-          <button class="btn btn-r btn-full" onclick="doLogout()">Se déconnecter</button>
+
+        <div id="as-pay" style="display:none">
+          <label>Texte instructions de paiement :</label>
+          <textarea id="admin-pay-text" rows="8" style="width:100%;margin:10px 0;"></textarea>
+          <button class="btn btn-p" onclick="updatePaymentAdmin()">Sauvegarder</button>
+          <div id="pay-msg" class="msg"></div>
         </div>
       </div>
-
     </div>
   </section>
 </div>
 </div>
 
-<!-- PAGE CGU -->
-<div id="page-cgu" class="page" role="main">
-<div class="lp">
-  <button class="back-btn" onclick="showPage('home')">← Retour</button>
-  <h1>Conditions Générales d'Utilisation</h1>
-  <span class="lp-date">Version 1.0 — Avril 2026</span>
-  <h2>Article 1 — Objet</h2>
-  <p>AutoPoint est un service numérique d'automatisation de pointage exploité sous le nom commercial AutoPoint. Il permet à l'utilisateur de déléguer la validation automatisée de ses plages de présence sur un portail tiers. AutoPoint est un outil purement technique, sans lien avec l'établissement ou l'employeur de l'utilisateur.</p>
-  <h2>Article 2 — Accès</h2>
-  <p>L'accès est conditionné à la création d'un compte, la souscription à un abonnement et la confirmation du paiement. L'utilisateur garantit avoir l'âge légal requis et fournir des informations exactes.</p>
-  <h2>Article 3 — Obligations de l'utilisateur</h2>
-  <ul>
-    <li>Fournir des informations exactes et à jour ;</li>
-    <li>Maintenir la confidentialité de ses identifiants AutoPoint ;</li>
-    <li>Informer AutoPoint de tout changement de ses identifiants de portail ;</li>
-    <li>Corriger manuellement son pointage en cas d'absence réelle non déclarée ;</li>
-    <li>S'assurer que l'usage est compatible avec les règles de son établissement.</li>
-  </ul>
-  <div class="hl">
-    <p><strong>⚠️ Responsabilité exclusive de l'utilisateur :</strong> L'utilisateur reconnaît être seul et entièrement responsable de l'usage du service AutoPoint et de toute conséquence pouvant en résulter. AutoPoint est un outil technique et ne peut être tenu coresponsable des actes de l'utilisateur.</p>
-  </div>
-  <h2>Article 4 — Responsabilité du Prestataire</h2>
-  <p>AutoPoint ne peut être tenu responsable d'un dysfonctionnement du portail tiers, d'une interruption pour maintenance ou force majeure, ni de tout préjudice indirect. La responsabilité est limitée aux sommes perçues au titre de l'abonnement en cours.</p>
-  <h2>Article 5 — Tarifs</h2>
-  <p>Mensuel : 10€/mois. Trimestriel : 25€/trimestre (prix promotionnel, valeur habituelle 30€). Des codes promotionnels peuvent modifier ces prix temporairement.</p>
-  <h2>Article 6 — Paiement et activation</h2>
-  <p>Paiement selon modalités affichées dans l'interface. Activation sous 24h. En cas de non-paiement, l'accès est suspendu à expiration automatique. Aucun remboursement pour période entamée.</p>
-  <h2>Article 7 — Résiliation et expiration</h2>
-  <p>Résiliation à tout moment via l'interface. À expiration, le compte est automatiquement désactivé. AutoPoint peut suspendre un compte en cas de violation des CGU.</p>
-  <h2>Article 8 — Données personnelles (RGPD)</h2>
-  <p>AutoPoint collecte les données strictement nécessaires. Jamais revendues. Mots de passe hachés (bcrypt). Identifiants portail stockés pour le service de pointage. Droit de suppression exercé directement depuis le tableau de bord.</p>
-  <h2>Article 9 — Droit applicable</h2>
-  <p>Droit français. Tout litige soumis aux juridictions françaises compétentes.</p>
-</div>
-</div>
-
-<!-- PAGE MENTIONS -->
-<div id="page-legal" class="page" role="main">
-<div class="lp">
-  <button class="back-btn" onclick="showPage('home')">← Retour</button>
-  <h1>Mentions légales</h1>
-  <span class="lp-date">Avril 2026</span>
-  <h2>Éditeur</h2>
-  <p>Service édité sous le nom commercial <strong>AutoPoint</strong>.<br/>Contact : <strong>autopoint.service@proton.me</strong></p>
-  <h2>Hébergement</h2>
-  <p>GitHub Pages — GitHub, Inc. — 88 Colin P. Kelly Jr. St, San Francisco, CA 94107, USA</p>
-  <h2>Propriété intellectuelle</h2>
-  <p>Tout le contenu est protégé. Reproduction interdite sans autorisation expresse.</p>
-  <h2>Cookies</h2>
-  <p>Aucun cookie publicitaire. Seul un cookie de session technique (sessionStorage), supprimé à la fermeture du navigateur.</p>
-</div>
-</div>
-
-<!-- MODAL PAIEMENT -->
-<div class="overlay" id="modal-payment" role="dialog" aria-modal="true" aria-labelledby="mp-title">
+<div class="overlay" id="modal-payment">
   <div class="modal">
-    <button class="mcls" onclick="closeModal('payment')" aria-label="Fermer">×</button>
-    <h2 id="mp-title">💳 Instructions de paiement</h2>
-    <p>Pour activer votre abonnement, suivez les instructions ci-dessous.</p>
-    <div class="reassurance">
-      <div class="rea-badge"><span class="rea-icon">🔒</span>Sécurisé</div>
-      <div class="rea-badge"><span class="rea-icon">🛡️</span>Anonyme</div>
-      <div class="rea-badge"><span class="rea-icon">✅</span>24h max</div>
-    </div>
-    <div class="cbox" id="payment-instructions">Chargement…</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-      <button class="copy-btn" onclick="copyText('autopoint.service@proton.me','copy-fb')">📋 Copier l'email</button>
-      <button class="copy-btn" id="copy-amount-btn" onclick="copyAmount()">💶 Copier le montant</button>
-    </div>
-    <div id="copy-fb" style="font-size:.77rem;color:var(--green);min-height:18px;" aria-live="polite"></div>
-    <button class="btn btn-c btn-full" onclick="closeModal('payment')" style="margin-top:8px;">J'ai bien noté — Fermer</button>
+    <h2>💳 Instructions de paiement</h2>
+    <div class="cbox" id="pay-instr-content">Chargement...</div>
+    <button class="btn btn-ok btn-full" onclick="closeModal('payment')">Fermer</button>
   </div>
 </div>
 
-<!-- MODAL RÉSILIATION -->
-<div class="overlay" id="modal-cancel" role="dialog" aria-modal="true" aria-labelledby="mc-title">
+<div class="overlay" id="modal-time">
   <div class="modal">
-    <button class="mcls" onclick="closeModal('cancel')" aria-label="Fermer">×</button>
-    <h2 id="mc-title">Résilier mon abonnement</h2>
-    <div class="warn-box" role="alert"><strong>⚠️</strong> Le pointage s'arrêtera en fin de période. Aucun remboursement proratisé.</div>
-    <p>Votre abonnement restera actif jusqu'à la fin de la période en cours.</p>
-    <div class="mbtns">
-      <button class="btn btn-g" onclick="closeModal('cancel')" style="flex:1;">Annuler</button>
-      <button class="btn btn-r" onclick="confirmCancel()" style="flex:1;width:auto;min-height:var(--touch);">Confirmer</button>
+    <h2>Modifier le temps</h2>
+    <p>Utilisateur : <strong id="time-target-pseudo">--</strong></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;">
+      <button class="btn btn-p" onclick="modTime(30)">+ 1 Mois</button>
+      <button class="btn btn-r" onclick="modTime(-30)">- 1 Mois</button>
+      <button class="btn btn-p" onclick="modTime(90)">+ 3 Mois</button>
+      <button class="btn btn-r" onclick="modTime(-90)">- 3 Mois</button>
     </div>
-  </div>
-</div>
-
-<!-- MODAL SUPPRESSION RGPD -->
-<div class="overlay" id="modal-delete" role="dialog" aria-modal="true" aria-labelledby="md-title">
-  <div class="modal">
-    <button class="mcls" onclick="closeModal('delete')" aria-label="Fermer">×</button>
-    <h2 id="md-title">Supprimer mon compte</h2>
-    <div class="warn-box" role="alert"><strong>⚠️ Irréversible !</strong> Toutes vos données seront définitivement supprimées et votre abonnement arrêté immédiatement.</div>
-    <div class="field"><label for="del-pw">Confirmez votre mot de passe AutoPoint</label><input type="password" id="del-pw" placeholder="••••••••" aria-required="true"/></div>
-    <div id="msg-delete" class="msg" role="alert" aria-live="assertive"></div>
-    <div class="mbtns">
-      <button class="btn btn-g" onclick="closeModal('delete')" style="flex:1;">Annuler</button>
-      <button class="btn btn-r" onclick="doDeleteAccount()" style="flex:1;width:auto;min-height:var(--touch);">Supprimer définitivement</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ACTIVATION ADMIN -->
-<div class="overlay" id="modal-activate" role="dialog" aria-modal="true" aria-labelledby="mact-title">
-  <div class="modal">
-    <button class="mcls" onclick="closeModal('activate')" aria-label="Fermer">×</button>
-    <h2 id="mact-title">Activer / Renouveler</h2>
-    <p>Durée à accorder à <strong id="act-un">—</strong> :</p>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
-      <button class="btn btn-p btn-full" onclick="activateUser('mensuel')">+1 mois — 10€ reçus</button>
-      <button class="btn btn-full" style="background:var(--cyan);border:2px solid var(--cyan);color:#000;font-family:'Cabinet Grotesk',sans-serif;font-weight:700;min-height:var(--touch);border-radius:var(--r);" onclick="activateUser('trimestriel')">+3 mois — 25€ reçus</button>
-      <button class="btn btn-c btn-full" onclick="activateUser('free')">Compte gratuit (0€)</button>
-    </div>
-    <button class="btn btn-g btn-full" onclick="closeModal('activate')">Annuler</button>
+    <button class="btn btn-g btn-full" onclick="closeModal('time')">Annuler</button>
   </div>
 </div>
 
 <footer role="contentinfo">
-  <strong style="font-family:'Cabinet Grotesk',sans-serif;color:var(--text);">AutoPoint</strong>
-  &nbsp;·&nbsp;<button onclick="showPage('cgu')">CGU</button>
-  &nbsp;·&nbsp;<button onclick="showPage('legal')">Mentions légales</button>
-  &nbsp;·&nbsp;<a href="mailto:autopoint.service@proton.me" style="color:var(--muted);font-size:.8rem;">Contact</a>
-  <br/><span style="font-size:.72rem;margin-top:6px;display:block;">© 2026 AutoPoint · 🔒 Service sécurisé · Données chiffrées</span>
+  <strong>AutoPoint</strong> · 2026 · 🔒 Service sécurisé
 </footer>
 
 <script>
 'use strict';
+const SB_URL = 'https://xnbfgxfxrbecbqfctzyd.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuYmZneGZ4cmJlY2JxZmN0enlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDg2NDEsImV4cCI6MjA5MzA4NDY0MX0.zr2XRABLOqEvUXFAk85ltkvUwGUfVMrdsUFAJkGjTL4';
+const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
-// ══ CONFIG ════════════════════════════════════════════════════
-const SB_URL      = 'https://xnbfgxfxrbecbqfctzyd.supabase.co';
-const SB_ANON     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuYmZneGZ4cmJlY2JxZmN0enlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDg2NDEsImV4cCI6MjA5MzA4NDY0MX0.zr2XRABLOqEvUXFAk85ltkvUwGUfVMrdsUFAJkGjTL4';
-const CONTACT     = 'autopoint.service@proton.me';
+let _u = null; // Session utilisateur
+let _t = null; // Cible admin pour le temps
 
-// ══ INIT SUPABASE ════════════════════════════════════════════
-const DEMO = SB_URL === 'VOTRE_URL_SUPABASE';
-let sb = null;
-if (!DEMO) {
-  try { sb = window.supabase.createClient(SB_URL, SB_ANON); }
-  catch(e) { console.error('Supabase init failed:', e); }
-}
-if (DEMO) console.warn('⚠️ Mode démo — configurez SB_URL et SB_ANON');
-
-// ══ SESSION ══════════════════════════════════════════════════
-const SS = 'ap_v5_sess';
-const getSession = () => { try { return JSON.parse(sessionStorage.getItem(SS)); } catch { return null; } };
-const setSession = u  => sessionStorage.setItem(SS, JSON.stringify(u));
-const clearSess  = () => sessionStorage.removeItem(SS);
-
-// ══ ARIA ════════════════════════════════════════════════════
-const say = msg => {
-  const el = document.getElementById('live');
-  el.textContent = ''; setTimeout(() => el.textContent = msg, 50);
-};
-
-// ══ NAVIGATION ═══════════════════════════════════════════════
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
   document.getElementById('page-' + n).classList.add('on');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function scrollToAuth() {
-  setTimeout(() => document.getElementById('auth')?.scrollIntoView({ behavior: 'smooth' }), 120);
-}
-
-// ══ TABS ══════════════════════════════════════════════════════
-const TAB_IDS = ['login', 'reg', 'reset'];
 
 function switchTab(t) {
-  TAB_IDS.forEach(id => {
-    const p = document.getElementById('pnl-' + id);
-    if (p) p.style.display = 'none';
-  });
-  document.getElementById('client-dash').style.display = 'none';
-  const ad = document.getElementById('admin-dash');
-  if (ad) ad.style.display = 'none';
-
-  const pnl = document.getElementById('pnl-' + t);
-  if (pnl) pnl.style.display = '';
-
-  const tabLogin = document.getElementById('tab-login');
-  const tabReg   = document.getElementById('tab-reg');
-  if (tabLogin) { tabLogin.classList.toggle('on', t === 'login'); tabLogin.setAttribute('aria-selected', t === 'login'); }
-  if (tabReg)   { tabReg.classList.toggle('on', t === 'reg');     tabReg.setAttribute('aria-selected', t === 'reg'); }
-
-  ['login','reg','reset'].forEach(clearMsg);
+  document.getElementById('pnl-login').style.display = t === 'login' ? 'block' : 'none';
+  document.getElementById('pnl-reg').style.display = t === 'reg' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('on', t === 'login');
+  document.getElementById('tab-reg').classList.toggle('on', t === 'reg');
 }
 
-// ══ PLAN SELECTOR ════════════════════════════════════════════
-let _promo = null;
-
-function selectPlan(p) {
-  ['mensuel', 'trimestriel'].forEach(id => {
-    const el = document.getElementById('po-' + id);
-    if (!el) return;
-    el.classList.toggle('on', id === p);
-    el.setAttribute('aria-checked', id === p);
-  });
-  updatePriceDisplay();
-  say('Formule ' + p + ' sélectionnée');
+function scrollToAuth() {
+  document.getElementById('auth').scrollIntoView({behavior:'smooth'});
 }
 
-function updatePriceDisplay() {
-  const isTrim = document.getElementById('po-trimestriel')?.classList.contains('on');
-  const base   = isTrim ? 25 : 10;
-  let final    = base;
-
-  if (_promo) {
-    const applies = _promo.plan === 'all'
-      || (_promo.plan === 'trimestriel' && isTrim)
-      || (_promo.plan === 'mensuel'     && !isTrim);
-    if (applies) {
-      final = _promo.type === 'pct'
-        ? +(base * (1 - _promo.value / 100)).toFixed(2)
-        : Math.max(0, base - _promo.value);
-    }
-  }
-
-  if (isTrim) {
-    const pe = document.getElementById('po-t-pr');
-    const oe = document.getElementById('po-t-old');
-    const se = document.getElementById('po-t-save');
-    if (pe) pe.textContent = final + '€';
-    if (oe) { oe.textContent = base + '€'; oe.style.display = final < base ? '' : 'none'; }
-    if (se) { se.textContent = final < base ? (_promo.type === 'pct' ? `−${_promo.value}%` : `−${_promo.value}€`) : ''; se.style.display = final < base ? '' : 'none'; }
-  }
-}
-
-// ══ PROMO ════════════════════════════════════════════════════
-async function applyPromo() {
-  const code = document.getElementById('r-promo')?.value.trim().toUpperCase();
-  if (!code) { showPromoFb('Entrez un code.', false); return; }
-
-  let promo = null;
-  if (DEMO) {
-    promo = null;
-  } else {
-    const { data } = await sb.rpc('get_promo', { p_code: code });
-    promo = data;
-  }
-
-  if (!promo || !promo.active) { showPromoFb('Code invalide ou expiré.', false); return; }
-  if (promo.max_uses > 0 && promo.uses >= promo.max_uses) { showPromoFb('Ce code est épuisé.', false); return; }
-
-  _promo = promo;
-  const lbl = promo.type === 'pct' ? `−${promo.value}%` : `−${promo.value}€`;
-  showPromoFb(`✅ Code "${code}" appliqué : ${lbl}`, true);
-  updatePriceDisplay();
-}
-
-function showPromoFb(msg, ok) {
-  const el = document.getElementById('promo-fb');
-  if (!el) return;
-  el.textContent = msg;
-  el.className   = 'promo-fb ' + (ok ? 'ok' : 'err');
-  say(msg);
-}
-
-// ══ MESSAGES ═════════════════════════════════════════════════
-function showMsg(p, t, c) {
-  const el = document.getElementById('msg-' + p);
-  if (!el) return;
-  el.textContent = t; el.className = 'msg ' + c;
-  say(t);
-}
-function clearMsg(p) {
-  const el = document.getElementById('msg-' + p);
-  if (el) { el.className = 'msg'; el.textContent = ''; }
-}
-
-// ══ MODALS ═══════════════════════════════════════════════════
-function openModal(n) {
-  const o = document.getElementById('modal-' + n);
-  if (!o) return;
-  o.classList.add('on');
-  const f = o.querySelector('button,[tabindex],input');
-  if (f) setTimeout(() => f.focus(), 100);
-  if (n === 'payment') loadPaymentInstructions();
-  say('Fenêtre ouverte');
-}
-function closeModal(n) {
-  document.getElementById('modal-' + n)?.classList.remove('on');
-  say('Fenêtre fermée');
-}
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.overlay.on').forEach(o => o.classList.remove('on'));
-});
-document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('on'); });
-});
-
-// ══ INSTRUCTIONS PAIEMENT ════════════════════════════════════
-async function loadPaymentInstructions() {
-  const el = document.getElementById('payment-instructions');
-  if (!el) return;
-  if (DEMO) {
-    el.textContent = `Pour activer votre abonnement :\n\n1. Envoyez votre règlement à :\n   ${CONTACT}\n\n2. Mentionnez votre pseudo dans le message\n\n3. Formule mensuelle     : 10€/mois\n   Formule trimestrielle : 25€/trimestre\n\nVotre service sera activé sous 24h\naprès confirmation du paiement.\n\n🔒 Aucune donnée bancaire ne transite par AutoPoint.`;
-    return;
-  }
-  const { data } = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
-  el.textContent = data?.value || `Contactez : ${CONTACT}`;
-}
-
-// ══ COPY HELPERS ═════════════════════════════════════════════
-function copyText(text, feedbackId) {
-  navigator.clipboard?.writeText(text).then(() => {
-    const fb = document.getElementById(feedbackId);
-    if (fb) { fb.textContent = '✅ Copié !'; setTimeout(() => fb.textContent = '', 3000); }
-    say('Copié');
-  }).catch(() => say('Copiez manuellement : ' + text));
-}
-function copyAmount() {
-  const s = getSession();
-  const amount = s?.plan_amount?.split(' ')[0] || '25€';
-  copyText(amount, 'copy-fb');
-}
-
-// ══ HELPERS DATES ════════════════════════════════════════════
-function addDays(d, n)  { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
-function daysLeft(exp)  { if (!exp) return 0; return Math.max(0, Math.ceil((new Date(exp) - new Date()) / 864e5)); }
-function fmtDate(d)     { if (!d) return '—'; return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' }); }
-function nextPointing() {
-  const h = new Date().getHours();
-  const j = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
-  if (h < 8)  return "aujourd'hui à 09h00";
-  if (h < 13) return "aujourd'hui à 14h00";
-  let d = new Date(); d.setDate(d.getDate() + 1);
-  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
-  return j[d.getDay()] + ' à 09h00';
-}
-
-// ══ RPC WRAPPER ══════════════════════════════════════════════
-async function rpc(fn, params) {
-  if (DEMO || !sb) return { data: null, error: { message: 'Mode démo' } };
-  return await sb.rpc(fn, params);
-}
-
-// ══ REGISTER ══════════════════════════════════════════════════
-async function doRegister() {
-  const fn  = document.getElementById('r-fn').value.trim();
-  const ln  = document.getElementById('r-ln').value.trim();
-  const ps  = document.getElementById('r-ps').value.trim();
-  const em  = document.getElementById('r-em').value.trim();
-  const gl  = document.getElementById('r-gl').value.trim();
-  const gp  = document.getElementById('r-gp').value.trim();
-  const pw  = document.getElementById('r-pw').value;
-  const pw2 = document.getElementById('r-pw2').value;
-  const pin = document.getElementById('r-pin').value.trim();
-  const cgu = document.getElementById('cgu-ok').checked;
-  const isTrim   = document.getElementById('po-trimestriel')?.classList.contains('on');
-  const plan     = isTrim ? 'trimestriel' : 'mensuel';
-  const base     = isTrim ? 25 : 10;
-  let   final    = base;
-
-  if (_promo) {
-    const applies = _promo.plan === 'all' || _promo.plan === plan;
-    if (applies) final = _promo.type === 'pct' ? +(base * (1 - _promo.value / 100)).toFixed(2) : Math.max(0, base - _promo.value);
-  }
-
-  const planLabel  = plan === 'mensuel' ? 'Mensuel — 10€/mois' : 'Trimestriel — 25€/trimestre';
-  const planAmount = final + '€' + (final < base ? ` (promo ${_promo?.code})` : '');
-
-  if (!fn || !ln || !ps || !em || !gl || !gp || !pw || !pin) { showMsg('reg', '⚠️ Tous les champs obligatoires sont requis.', 'err'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showMsg('reg', '⚠️ Adresse email invalide.', 'err'); return; }
-  if (/\s/.test(ps))   { showMsg('reg', '⚠️ Le pseudo ne doit pas contenir d\'espaces.', 'err'); return; }
-  if (pw.length < 8)   { showMsg('reg', '⚠️ Mot de passe trop court (8 caractères min).', 'err'); return; }
-  if (pw !== pw2)      { showMsg('reg', '⚠️ Les mots de passe ne correspondent pas.', 'err'); return; }
-  if (!/^\d{4}$/.test(pin)) { showMsg('reg', '⚠️ Le PIN doit être exactement 4 chiffres.', 'err'); return; }
-  if (!cgu)            { showMsg('reg', '⚠️ Vous devez accepter les CGU.', 'err'); return; }
-
-  if (DEMO) {
-    const u = { pseudo:ps, prenom:fn, nom:ln, email:em, login_guinot:gl, plan, plan_label:planLabel, plan_amount:planAmount, statut_bot:'inactif', date_fin_abonnement:null, absences:[], is_admin:false };
-    setSession(u);
+function handleBuy(plan) {
+  if (_u) {
+    showPage('home');
+    scrollToAuth();
     openModal('payment');
-    return;
+  } else {
+    switchTab('reg');
+    scrollToAuth();
   }
-
-  const { data, error } = await rpc('register_user', {
-    p_pseudo:ps, p_prenom:fn, p_nom:ln, p_email:em,
-    p_login_guinot:gl, p_mdp_guinot:gp,
-    p_mdp_plain:pw, p_pin:pin,
-    p_plan:plan, p_plan_label:planLabel, p_plan_amount:planAmount,
-    p_promo_code: _promo?.code || null
-  });
-
-  if (error || !data?.success) {
-    const msgs = { pseudo_taken:'Ce pseudo est déjà utilisé.', email_taken:'Cet email est déjà enregistré.', invalid_pin:'Le PIN doit être 4 chiffres.', password_too_short:'Mot de passe trop court.' };
-    showMsg('reg', '⚠️ ' + (msgs[data?.error] || error?.message || 'Erreur. Réessayez.'), 'err');
-    return;
-  }
-
-  const u = { pseudo:ps, prenom:fn, nom:ln, email:em, login_guinot:gl, plan, plan_label:planLabel, plan_amount:planAmount, statut_bot:'inactif', date_fin_abonnement:null, absences:[], is_admin:false };
-  setSession(u);
-  openModal('payment');
 }
 
-// ══ LOGIN ══════════════════════════════════════════════════════
 async function doLogin() {
   const ps = document.getElementById('l-ps').value.trim();
   const pw = document.getElementById('l-pw').value;
-  if (!ps || !pw) { showMsg('login', '⚠️ Remplissez tous les champs.', 'err'); return; }
-
-  if (DEMO) { showMsg('login', '⚠️ Mode démo — configurez Supabase.', 'wrn'); return; }
-
-  const { data, error } = await rpc('login_with_pseudo', { p_pseudo:ps, p_mdp_plain:pw });
-
-  if (error || !data?.success) {
-    const msgs = { not_found:'Pseudo ou mot de passe incorrect.', wrong_password:'Pseudo ou mot de passe incorrect.' };
-    showMsg('login', '❌ ' + (msgs[data?.error] || 'Erreur de connexion.'), 'err');
-    return;
+  const { data, error } = await sb.rpc('login_with_pseudo', { p_pseudo:ps, p_mdp_plain:pw });
+  if (error || !data?.success) { 
+    document.getElementById('msg-login').textContent = "Identifiants incorrects.";
+    document.getElementById('msg-login').className = "msg err";
+    return; 
   }
-
-  const sessionData = { ...data, _pwd: pw };
-  setSession(sessionData);
-  if (data.is_admin) { showAdminDash(); return; }
-  showClientDash(data);
+  _u = { ...data, _pw: pw };
+  updateUI();
 }
 
-// ══ RESET PIN ══════════════════════════════════════════════════
-async function doResetPin() {
-  const ps  = document.getElementById('rs-ps').value.trim();
-  const pin = document.getElementById('rs-pin').value.trim();
-  const pw  = document.getElementById('rs-pw').value;
-  const pw2 = document.getElementById('rs-pw2').value;
-  if (!ps || !pin || !pw)    { showMsg('reset', '⚠️ Remplissez tous les champs.', 'err'); return; }
-  if (pw.length < 8)          { showMsg('reset', '⚠️ Mot de passe trop court.', 'err'); return; }
-  if (pw !== pw2)             { showMsg('reset', '⚠️ Les mots de passe ne correspondent pas.', 'err'); return; }
-  if (!/^\d{4}$/.test(pin))  { showMsg('reset', '⚠️ Le PIN doit être 4 chiffres.', 'err'); return; }
+async function doRegister() {
+  const ps = document.getElementById('r-ps').value.trim();
+  const em = document.getElementById('r-em').value.trim();
+  const gl = document.getElementById('r-gl').value.trim();
+  const gp = document.getElementById('r-gp').value.trim();
+  const pw = document.getElementById('r-pw').value;
+  const pin = document.getElementById('r-pin').value.trim();
 
-  if (DEMO) { showMsg('reset', '⚠️ Mode démo — configurez Supabase.', 'wrn'); return; }
+  if(!ps || !em || !gl || !gp || !pw || !pin) return alert("Remplissez tout.");
 
-  const { data, error } = await rpc('reset_password_with_pin', { p_pseudo:ps, p_pin:pin, p_new_mdp:pw });
-
-  if (error || !data?.success) {
-    const msgs = {
-      not_found:        'Pseudo introuvable.',
-      wrong_pin:        `PIN incorrect. ${data?.remaining ?? ''} tentative(s) restante(s).`,
-      locked:           'Compte verrouillé 15 minutes (trop de tentatives).',
-      locked_now:       'Trop de tentatives. Compte verrouillé 15 minutes.',
-      password_too_short:'Nouveau mot de passe trop court.'
-    };
-    showMsg('reset', '❌ ' + (msgs[data?.error] || 'Erreur.'), 'err');
-    return;
-  }
-
-  showMsg('reset', '✅ Mot de passe réinitialisé ! Vous pouvez vous connecter.', 'ok');
-  setTimeout(() => switchTab('login'), 2000);
-}
-
-// ══ CLIENT DASHBOARD ══════════════════════════════════════════
-function showClientDash(u) {
-  // Masquage des boutons de navigation "Connexion / Inscription"
-  const btnL = document.getElementById('btn-nav-login');
-  const btnR = document.getElementById('btn-nav-reg');
-  if (btnL) btnL.style.display = 'none';
-  if (btnR) btnR.style.display = 'none';
-
-  TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
-  document.getElementById('client-dash').style.display = '';
-  const ad = document.getElementById('admin-dash'); if (ad) ad.style.display = 'none';
-  const tabLogin = document.getElementById('tab-login');
-  const tabReg   = document.getElementById('tab-reg');
-  if (tabLogin) tabLogin.classList.remove('on');
-  if (tabReg)   tabReg.classList.remove('on');
-
-  document.getElementById('cd-name').textContent    = u.prenom || u.pseudo;
-  document.getElementById('cd-pseudo').textContent  = u.pseudo;
-  document.getElementById('cd-email').textContent   = u.email;
-  document.getElementById('cd-portal').textContent  = u.login_guinot;
-  document.getElementById('cd-plan').textContent    = u.statut_bot === 'gratuit' ? '★ Gratuit' : (u.plan_label || '—');
-  document.getElementById('cd-next').textContent    = nextPointing();
-
-  const sb2 = document.getElementById('cd-sbadge');
-  const st  = document.getElementById('cd-stxt');
-  if (u.statut_bot === 'gratuit') { sb2.className = 'sbadge free';  st.textContent = 'Actif — Gratuit'; }
-  else if (u.statut_bot === 'actif') { sb2.className = 'sbadge act'; st.textContent = 'Actif'; }
-  else { sb2.className = 'sbadge wait'; st.textContent = "En attente d'activation"; }
-
-  if (u.statut_bot === 'gratuit') {
-    document.getElementById('cd-days').textContent = '∞';
-    document.getElementById('cd-lbl').textContent  = 'compte gratuit';
-    document.getElementById('pb-fill').style.width = '100%';
-    document.getElementById('cd-exp').textContent  = '';
-    document.getElementById('btn-renew').style.display = 'none';
-  } else if (u.date_fin_abonnement) {
-    const left  = daysLeft(u.date_fin_abonnement);
-    const total = u.plan === 'mensuel' ? 30 : 90;
-    const pct   = Math.min(100, Math.round((left / total) * 100));
-    document.getElementById('cd-days').textContent = left;
-    document.getElementById('cd-lbl').textContent  = left <= 1 ? 'jour restant' : 'jours restants';
-    document.getElementById('pb-fill').style.width = pct + '%';
-    document.getElementById('pb-wrap').setAttribute('aria-valuenow', pct);
-    document.getElementById('cd-exp').textContent  = 'Expiration le ' + fmtDate(u.date_fin_abonnement);
-    document.getElementById('btn-renew').style.display = (left <= 7 || u.statut_bot !== 'actif') ? '' : 'none';
-  } else {
-    document.getElementById('cd-days').textContent = '—';
-    document.getElementById('cd-lbl').textContent  = "en attente d'activation";
-    document.getElementById('pb-fill').style.width = '0%';
-    document.getElementById('btn-renew').style.display = 'none';
-  }
-
-  refreshAbsenceBtns(u.absences || []);
-  say('Tableau de bord chargé. Bonjour ' + (u.prenom || u.pseudo));
-}
-
-// ══ ABSENCES ══════════════════════════════════════════════════
-function refreshAbsenceBtns(absences) {
-  const today = new Date().toISOString().split('T')[0];
-  const amAbs = (absences || []).some(a => a.date === today && a.session === 'AM');
-  const pmAbs = (absences || []).some(a => a.date === today && a.session === 'PM');
-  const amBtn = document.getElementById('abs-am');
-  const pmBtn = document.getElementById('abs-pm');
-  if (amBtn) { amBtn.classList.toggle('absent', amAbs); amBtn.setAttribute('aria-pressed', amAbs); amBtn.textContent = amAbs ? '✅ Matin — Absent' : '🌅 Ce matin (9h00)'; }
-  if (pmBtn) { pmBtn.classList.toggle('absent', pmAbs); pmBtn.setAttribute('aria-pressed', pmAbs); pmBtn.textContent = pmAbs ? '✅ Après-midi — Absent' : '🌇 Cet après-midi (14h00)'; }
-}
-
-async function toggleAbsence(session) {
-  const s = getSession(); if (!s) return;
-  const today = new Date().toISOString().split('T')[0];
-
-  if (DEMO) {
-    const abs = [...(s.absences || [])];
-    const idx = abs.findIndex(a => a.date === today && a.session === session);
-    if (idx >= 0) abs.splice(idx, 1); else abs.push({ date: today, session });
-    const updated = { ...s, absences: abs };
-    setSession(updated); refreshAbsenceBtns(abs);
-    say(idx >= 0 ? 'Absence supprimée' : 'Absence déclarée');
-    return;
-  }
-
-  const { data, error } = await rpc('toggle_absence', { p_pseudo:s.pseudo, p_date:today, p_session:session });
-  if (error || !data?.success) { say('Erreur lors de la mise à jour'); return; }
-  const updated = { ...s, absences: data.absences };
-  setSession(updated); refreshAbsenceBtns(data.absences);
-  say(data.absent ? 'Absence déclarée' : 'Absence supprimée');
-}
-
-// ══ RÉSILIATION ════════════════════════════════════════════════
-async function confirmCancel() {
-  closeModal('cancel');
-  say('Demande de résiliation enregistrée.');
-  alert("✅ Résiliation enregistrée. Le service reste actif jusqu'à la fin de votre période.");
-}
-
-// ══ SUPPRESSION RGPD ══════════════════════════════════════════
-async function doDeleteAccount() {
-  const pw = document.getElementById('del-pw').value;
-  const s  = getSession(); if (!s) return;
-  if (!pw) { showMsg('delete', '⚠️ Entrez votre mot de passe.', 'err'); return; }
-
-  if (DEMO) { clearSess(); closeModal('delete'); switchTab('login'); say('Compte supprimé (démo)'); return; }
-
-  const { data, error } = await rpc('delete_own_account', { p_pseudo:s.pseudo, p_mdp_plain:pw });
-  if (error || !data?.success) {
-    showMsg('delete', '❌ ' + (data?.error === 'wrong_password' ? 'Mot de passe incorrect.' : 'Erreur.'), 'err');
-    return;
-  }
-  clearSess(); closeModal('delete'); doLogout();
-  say('Compte supprimé définitivement');
-  alert('✅ Compte supprimé conformément au RGPD.');
-}
-
-// ══ DÉCONNEXION ════════════════════════════════════════════════
-function doLogout() { 
-  clearSess(); 
-  // Réafficher les boutons
-  const btnL = document.getElementById('btn-nav-login');
-  const btnR = document.getElementById('btn-nav-reg');
-  if (btnL) btnL.style.display = '';
-  if (btnR) btnR.style.display = '';
-  
-  switchTab('login'); 
-  say('Déconnecté'); 
-}
-
-// ══ ADMIN DASHBOARD ════════════════════════════════════════════
-async function showAdminDash() {
-  // Masquage des boutons de navigation "Connexion / Inscription"
-  const btnL = document.getElementById('btn-nav-login');
-  const btnR = document.getElementById('btn-nav-reg');
-  if (btnL) btnL.style.display = 'none';
-  if (btnR) btnR.style.display = 'none';
-
-  TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
-  document.getElementById('client-dash').style.display = 'none';
-  const tabLogin = document.getElementById('tab-login');
-  const tabReg   = document.getElementById('tab-reg');
-  if (tabLogin) tabLogin.classList.remove('on');
-  if (tabReg)   tabReg.classList.remove('on');
-
-  let div = document.getElementById('admin-dash');
-  if (!div) {
-    div = document.createElement('div');
-    div.id = 'admin-dash';
-    document.querySelector('.auth-card').appendChild(div);
-  }
-  div.style.display = '';
-  div.innerHTML = '<div style="text-align:center;padding:30px;"><div class="spinner"></div><p style="color:var(--muted);margin-top:10px;font-size:.83rem;">Chargement…</p></div>';
-
-  let allUsers = [], allPromos = [], currentPaymentText = "Contactez : " + CONTACT;
-
-  if (DEMO) {
-    allUsers  = JSON.parse(localStorage.getItem('ap_demo_users')  || '[]');
-    allPromos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
-  } else {
-    const [ru, rp, rpay] = await Promise.all([
-      sb.from('users').select('id,pseudo,prenom,nom,email,statut_bot,plan_label,date_fin_abonnement').neq('is_admin', true).order('created_at', { ascending: false }),
-      sb.from('promo_codes').select('*').order('created_at', { ascending: false }),
-      sb.from('config').select('value').eq('key', 'payment_instructions').single()
-    ]);
-    allUsers  = ru.data  || [];
-    allPromos = rp.data  || [];
-    if (rpay.data) currentPaymentText = rpay.data.value;
-  }
-
-  const actifs  = allUsers.filter(u => u.statut_bot === 'actif' || u.statut_bot === 'gratuit').length;
-  const attente = allUsers.filter(u => u.statut_bot === 'inactif').length;
-  const exp7    = allUsers.filter(u => u.date_fin_abonnement && daysLeft(u.date_fin_abonnement) <= 7 && daysLeft(u.date_fin_abonnement) > 0).length;
-
-  const rows = allUsers.length === 0
-    ? '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px;">Aucun utilisateur</td></tr>'
-    : allUsers.map(u => {
-        const left = u.statut_bot === 'gratuit' ? '∞' : (u.date_fin_abonnement ? daysLeft(u.date_fin_abonnement) : '—');
-        const lc   = u.statut_bot === 'gratuit' ? '' : (typeof left === 'number' ? (left > 7 ? 'ok' : left > 0 ? 'wrn' : 'exp') : '');
-        const st   = u.statut_bot === 'gratuit'
-          ? '<span class="sbadge free">Gratuit</span>'
-          : (u.statut_bot === 'actif' ? '<span class="sbadge act">Actif</span>' : '<span class="sbadge exp">Inactif</span>');
-        return `<tr>
-          <td class="td-name">${u.prenom || ''} ${u.nom || ''}</td>
-          <td><small>${u.pseudo}</small></td>
-          <td><small>${u.email}</small></td>
-          <td>${st}</td>
-          <td class="td-days ${lc}">${left}${typeof left === 'number' ? 'j' : ''}</td>
-          <td><small>${fmtDate(u.date_fin_abonnement)}</small></td>
-          <td class="td-acts">
-            <button class="btn btn-sm btn-p" onclick="openActivateModal('${u.pseudo}')">Activer</button>
-            <button class="btn btn-sm btn-r" onclick="deactivateUser('${u.pseudo}')">Désactiver</button>
-          </td></tr>`;
-      }).join('');
-
-  const promoRows = allPromos.length === 0
-    ? '<p style="color:var(--muted);font-size:.83rem;padding:6px 0;">Aucun code promo.</p>'
-    : allPromos.map(p => `
-        <div class="promo-item">
-          <div>
-            <span class="promo-code">${p.code}</span>
-            <span class="promo-meta"> · ${p.type === 'pct' ? p.value + '%' : p.value + '€'} · ${p.plan === 'all' ? 'Toutes formules' : p.plan}</span>
-            <span class="promo-meta"> · ${p.uses || 0}/${p.max_uses > 0 ? p.max_uses : '∞'} utilisations</span>
-          </div>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <span class="sbadge ${p.active ? 'act' : 'exp'}">${p.active ? 'Actif' : 'Inactif'}</span>
-            <button class="btn btn-xs btn-r" onclick="togglePromo('${p.code}')">${p.active ? 'OFF' : 'ON'}</button>
-          </div>
-        </div>`).join('');
-
-  div.innerHTML = `
-    <div class="admin-head">
-      <h2>🛡️ Panneau Admin</h2>
-      <button class="btn btn-r btn-sm" onclick="doLogout()">Déconnexion</button>
-    </div>
-    <div class="admin-stats">
-      <div class="astat"><span class="astat-n">${allUsers.length}</span><span class="astat-l">Total</span></div>
-      <div class="astat"><span class="astat-n" style="color:var(--green);">${actifs}</span><span class="astat-l">Actifs</span></div>
-      <div class="astat"><span class="astat-n" style="color:var(--amber);">${attente}</span><span class="astat-l">En attente</span></div>
-      <div class="astat"><span class="astat-n" style="color:var(--red);">${exp7}</span><span class="astat-l">&lt;7j restants</span></div>
-    </div>
-    <div class="admin-tabs">
-      <button class="at on" id="at-u" onclick="swAdminTab('u')">👥 Utilisateurs</button>
-      <button class="at"    id="at-p" onclick="swAdminTab('p')">🎟️ Codes promo</button>
-      <button class="at"    id="at-pay" onclick="swAdminTab('pay')">💳 Infos Paiement</button>
-    </div>
-    <div id="as-u" class="admin-section on">
-      <div class="filter-bar">
-        <input type="text" id="asearch" placeholder="🔍 Rechercher pseudo, email…" oninput="filterTbl()"/>
-        <button class="btn btn-g btn-sm" onclick="showAdminDash()">↻</button>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Nom</th><th>Pseudo</th><th>Email</th><th>Statut</th><th>Jours</th><th>Expiration</th><th>Actions</th></tr></thead>
-          <tbody id="atbody">${rows}</tbody>
-        </table>
-      </div>
-    </div>
-    <div id="as-p" class="admin-section">
-      <div class="promo-admin-card">
-        <h3>Créer un code promo</h3>
-        <div class="pgen-grid">
-          <div class="field"><label for="g-code">Code</label><input type="text" id="g-code" placeholder="NOEL2026" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"/></div>
-          <div class="field"><label for="g-type">Type</label><select id="g-type"><option value="pct">% remise</option><option value="fixed">€ fixe</option></select></div>
-          <div class="field"><label for="g-val">Valeur</label><input type="number" id="g-val" placeholder="10" min="1"/></div>
-          <div class="field"><label for="g-plan">Formule</label><select id="g-plan"><option value="all">Toutes</option><option value="mensuel">Mensuel</option><option value="trimestriel">Trimestriel</option></select></div>
-          <div class="field"><label for="g-max">Max utilisations</label><input type="number" id="g-max" placeholder="0 = illimité" min="0"/></div>
-        </div>
-        <button class="btn btn-p btn-sm" onclick="createPromo()">+ Créer le code</button>
-        <div id="g-msg" class="msg" role="alert" style="margin-top:10px;"></div>
-      </div>
-      <div id="promo-list">${promoRows}</div>
-    </div>
-    <div id="as-pay" class="admin-section">
-      <div class="promo-admin-card">
-        <h3>Modifier les instructions de paiement</h3>
-        <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">Ces instructions s'affichent aux clients après leur inscription pour qu'ils puissent vous payer. Seul un administrateur peut modifier cette zone.</p>
-        <div class="field"><textarea id="admin-pay-text" rows="8" placeholder="Vos instructions..."></textarea></div>
-        <button class="btn btn-p" onclick="updatePaymentInstructions()">💾 Sauvegarder les modifications</button>
-        <div id="pay-msg" class="msg" style="margin-top:10px;"></div>
-      </div>
-    </div>
-  `;
-
-  // Remplissage sécurisé du texte de paiement
-  const payTextEl = document.getElementById('admin-pay-text');
-  if (payTextEl) payTextEl.value = currentPaymentText;
-
-  say('Panneau admin chargé. ' + allUsers.length + ' utilisateur(s).');
-}
-
-function swAdminTab(t) {
-  ['u','p','pay'].forEach(id => {
-    document.getElementById('at-' + id)?.classList.toggle('on', id === t);
-    document.getElementById('as-' + id)?.classList.toggle('on', id === t);
+  const { data, error } = await sb.rpc('register_user', {
+    p_pseudo:ps, p_prenom:'', p_nom:'', p_email:em,
+    p_login_guinot:gl, p_mdp_guinot:gp, p_mdp_plain:pw, p_pin:pin,
+    p_plan:'mensuel', p_plan_label:'Mensuel', p_plan_amount:'10€', p_promo_code:null
   });
-}
-function filterTbl() {
-  const q = document.getElementById('asearch')?.value.toLowerCase() || '';
-  document.querySelectorAll('#atbody tr').forEach(r => { r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none'; });
-}
-
-async function updatePaymentInstructions() {
-  const text = document.getElementById('admin-pay-text').value.trim();
-  const msgEl = document.getElementById('pay-msg');
-
-  if (!text) { showEl(msgEl, 'Le texte ne peut pas être vide.', 'err'); return; }
-
-  if (DEMO) {
-    showEl(msgEl, '✅ Sauvegardé (Mode Démo)', 'ok');
-    return;
-  }
-
-  const s = getSession();
-  const { data, error } = await rpc('admin_update_payment', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_new_text: text });
 
   if (error || !data?.success) {
-    showEl(msgEl, '❌ Erreur de sauvegarde : ' + (error?.message || data?.error), 'err');
+    document.getElementById('msg-reg').textContent = "Erreur (pseudo ou email déjà pris).";
+    document.getElementById('msg-reg').className = "msg err";
   } else {
-    showEl(msgEl, '✅ Instructions de paiement mises à jour avec succès !', 'ok');
+    alert("Compte créé ! Connectez-vous.");
+    switchTab('login');
   }
 }
 
-// ══ ACTIVATION ADMIN ══════════════════════════════════════════
-let _actTarget = null;
-function openActivateModal(pseudo) {
-  _actTarget = pseudo;
-  document.getElementById('act-un').textContent = pseudo;
-  openModal('activate');
-}
+function updateUI() {
+  if (!_u) return;
+  document.getElementById('nav-login').style.display = 'none';
+  document.getElementById('nav-reg').style.display = 'none';
+  document.getElementById('main-cta').style.display = 'none';
+  document.getElementById('auth-tabs').style.display = 'none';
+  document.getElementById('pnl-login').style.display = 'none';
+  document.getElementById('pnl-reg').style.display = 'none';
+  document.getElementById('nav-logout').style.display = 'block';
 
-async function activateUser(plan) {
-  if (!_actTarget) return;
-  closeModal('activate');
+  document.querySelectorAll('.btn-buy').forEach(b => b.textContent = "Aller à mon espace");
 
-  if (DEMO) {
-    const users = JSON.parse(localStorage.getItem('ap_demo_users') || '[]');
-    const i = users.findIndex(u => u.pseudo === _actTarget);
-    if (i >= 0) {
-      users[i].statut_bot = plan === 'free' ? 'gratuit' : 'actif';
-      users[i].date_fin_abonnement = plan === 'free' ? null : addDays(new Date(), plan === 'mensuel' ? 30 : 90).toISOString();
-      localStorage.setItem('ap_demo_users', JSON.stringify(users));
-    }
-    say('Compte ' + _actTarget + ' activé (démo)');
-    _actTarget = null;
-    await showAdminDash();
-    return;
+  if (_u.is_admin) {
+    document.getElementById('admin-dash').style.display = 'block';
+    loadAdminUsers();
+  } else {
+    document.getElementById('client-dash').style.display = 'block';
+    document.getElementById('cd-welcome').textContent = "Bonjour, " + _u.pseudo;
+    const days = _u.date_fin_abonnement ? Math.max(0, Math.ceil((new Date(_u.date_fin_abonnement) - new Date()) / 86400000)) : 0;
+    document.getElementById('cd-days').textContent = days;
+    refreshAbsBtns();
   }
-
-  const s = getSession();
-const { data, error } = await rpc('admin_activate', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_pseudo: _actTarget, p_plan: plan });
-  if (error || !data?.success) say('Erreur activation : ' + (error?.message || data?.error));
-  else say('Compte ' + _actTarget + ' activé jusqu\'au ' + fmtDate(data?.expires_at));
-  _actTarget = null;
-  await showAdminDash();
 }
 
-async function deactivateUser(pseudo) {
-  if (!confirm('Désactiver le compte de ' + pseudo + ' ?')) return;
+async function loadAdminUsers() {
+  const { data } = await sb.from('users').select('*').neq('is_admin', true).order('created_at', {ascending:false});
+  const tbody = document.getElementById('atbody');
+  tbody.innerHTML = data.map(u => `
+    <tr>
+      <td>${u.pseudo}</td>
+      <td><span class="sbadge ${u.statut_bot === 'actif' ? 'act' : 'exp'}">${u.statut_bot}</span></td>
+      <td>${u.date_fin_abonnement ? new Date(u.date_fin_abonnement).toLocaleDateString() : '--'}</td>
+      <td><button class="btn btn-p btn-xs" onclick="openTimeModal('${u.pseudo}')">Gérer temps</button></td>
+    </tr>
+  `).join('');
+}
 
-  if (DEMO) {
-    const users = JSON.parse(localStorage.getItem('ap_demo_users') || '[]');
-    const i = users.findIndex(u => u.pseudo === pseudo);
-    if (i >= 0) { users[i].statut_bot = 'inactif'; users[i].date_fin_abonnement = null; localStorage.setItem('ap_demo_users', JSON.stringify(users)); }
-    say('Compte ' + pseudo + ' désactivé (démo)');
-    await showAdminDash(); return;
+function openTimeModal(ps) { _t = ps; document.getElementById('time-target-pseudo').textContent = ps; openModal('time'); }
+
+async function modTime(days) {
+  const { data, error } = await sb.rpc('admin_manage_time', {
+    p_caller_pseudo: _u.pseudo, p_caller_mdp: _u._pw, p_target_pseudo: _t, p_days_to_add: days
+  });
+  if (error || !data?.success) alert("Erreur: " + (error?.message || data?.error));
+  else { alert("Temps mis à jour !"); closeModal('time'); loadAdminUsers(); }
+}
+
+async function updateProfile() {
+  const newAp = document.getElementById('up-pw').value;
+  const newGp = document.getElementById('up-gp').value;
+  const verify = document.getElementById('up-verify').value;
+  if (!verify) return alert("Mot de passe actuel requis.");
+  
+  const { data, error } = await sb.rpc('client_update_profile', {
+    p_pseudo: _u.pseudo, p_current_mdp: verify, p_new_mdp_ap: newAp, p_new_mdp_guinot: newGp
+  });
+
+  const msg = document.getElementById('msg-up');
+  if (error || !data?.success) { msg.textContent = "Erreur: Mdp actuel invalide."; msg.className="msg err"; }
+  else { msg.textContent = "Profil mis à jour !"; msg.className="msg ok"; if(newAp) _u._pw = newAp; }
+}
+
+async function toggleAbsence(sess) {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.rpc('toggle_absence', { p_pseudo:_u.pseudo, p_date:today, p_session:sess });
+  if (data) { _u.absences = data.absences; refreshAbsBtns(); }
+}
+
+function refreshAbsBtns() {
+  const today = new Date().toISOString().split('T')[0];
+  const abs = _u.absences || [];
+  const am = abs.some(a => a.date === today && a.session === 'AM');
+  const pm = abs.some(a => a.date === today && a.session === 'PM');
+  document.getElementById('abs-am').className = am ? "btn btn-p btn-sm" : "btn btn-g btn-sm";
+  document.getElementById('abs-pm').className = pm ? "btn btn-p btn-sm" : "btn btn-g btn-sm";
+}
+
+function swAdmin(tab) {
+  document.getElementById('as-users').style.display = tab === 'users' ? 'block' : 'none';
+  document.getElementById('as-pay').style.display = tab === 'pay' ? 'block' : 'none';
+  if (tab === 'pay') loadPayAdmin();
+}
+
+async function loadPayAdmin() {
+  const { data } = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
+  document.getElementById('admin-pay-text').value = data?.value || "";
+}
+
+async function updatePaymentAdmin() {
+  const val = document.getElementById('admin-pay-text').value;
+  const { data } = await sb.rpc('admin_update_payment', { p_caller_pseudo: _u.pseudo, p_caller_mdp: _u._pw, p_new_text: val });
+  document.getElementById('pay-msg').textContent = data?.success ? "Enregistré !" : "Erreur.";
+  document.getElementById('pay-msg').className = data?.success ? "msg ok" : "msg err";
+}
+
+async function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('on');
+  if (id === 'payment') {
+    const { data } = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
+    document.getElementById('pay-instr-content').textContent = data?.value || "Pas d'instructions.";
   }
-
-  const s = getSession();
-const { data, error } = await rpc('admin_deactivate', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_pseudo: pseudo });
-  if (error || !data?.success) say('Erreur désactivation'); else say('Compte ' + pseudo + ' désactivé');
-  await showAdminDash();
 }
 
-// ══ PROMO ADMIN ════════════════════════════════════════════════
-async function createPromo() {
-  const code = document.getElementById('g-code')?.value.trim().toUpperCase();
-  const type = document.getElementById('g-type')?.value;
-  const val  = parseFloat(document.getElementById('g-val')?.value);
-  const plan = document.getElementById('g-plan')?.value;
-  const max  = parseInt(document.getElementById('g-max')?.value) || 0;
-  const msgEl = document.getElementById('g-msg');
+function closeModal(id) { document.getElementById('modal-' + id).classList.remove('on'); }
 
-  if (!code)          { showEl(msgEl, 'Code requis.', 'err'); return; }
-  if (!val || val <= 0) { showEl(msgEl, 'Valeur invalide.', 'err'); return; }
-  if (type === 'pct' && val > 100) { showEl(msgEl, 'Pourcentage max 100%.', 'err'); return; }
+function doLogout() { _u = null; location.reload(); }
 
-  if (DEMO) {
-    const promos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
-    if (promos.find(p => p.code === code)) { showEl(msgEl, 'Code déjà existant.', 'err'); return; }
-    promos.push({ code, type, value: val, plan, max_uses: max, uses: 0, active: true });
-    localStorage.setItem('ap_demo_promos', JSON.stringify(promos));
-    showEl(msgEl, `✅ Code "${code}" créé !`, 'ok');
-    setTimeout(() => showAdminDash(), 800);
-    return;
-  }
-
-  const { error } = await sb.from('promo_codes').insert({ code, type, value: val, plan, max_uses: max, uses: 0, active: true });
-  if (error) { showEl(msgEl, error.code === '23505' ? 'Code déjà existant.' : 'Erreur création.', 'err'); return; }
-  showEl(msgEl, `✅ Code "${code}" créé !`, 'ok');
-  setTimeout(() => showAdminDash(), 800);
+function filterAdmin() {
+  const q = document.getElementById('asearch').value.toLowerCase();
+  document.querySelectorAll('#atbody tr').forEach(r => r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none');
 }
-
-async function togglePromo(code) {
-  if (DEMO) {
-    const promos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
-    const i = promos.findIndex(p => p.code === code);
-    if (i >= 0) { promos[i].active = !promos[i].active; localStorage.setItem('ap_demo_promos', JSON.stringify(promos)); }
-    await showAdminDash(); return;
-  }
-  const { data } = await sb.from('promo_codes').select('active').eq('code', code).single();
-  await sb.from('promo_codes').update({ active: !data?.active }).eq('code', code);
-  await showAdminDash();
-}
-
-function showEl(el, txt, cls) { if (!el) return; el.textContent = txt; el.className = 'msg ' + cls; say(txt); }
-
-// ══ INIT ══════════════════════════════════════════════════════
-(async () => {
-  const s = getSession(); if (!s) return;
-  if (s.is_admin) { showAdminDash(); return; }
-  showClientDash(s);
-})();
 </script>
 </body>
 </html>
