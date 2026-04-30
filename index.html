@@ -12,19 +12,19 @@
 <style>
 /* PALETTE SÉCURITÉ & HAUT CONTRASTE (Trust Blue & Slate) */
 :root {
-  --ink: #0f172a;        /* Slate très sombre - fond principal */
-  --ink2: #1e293b;       /* Slate moyen - cartes */
-  --ink3: #334155;       /* Slate clair - bordures/inputs */
+  --ink: #0f172a;        
+  --ink2: #1e293b;       
+  --ink3: #334155;       
   --line: #475569;
-  --text: #f8fafc;       /* Blanc cassé - texte lisible */
-  --muted: #94a3b8;      /* Gris clair - texte secondaire */
-  --blue: #2563eb;       /* Trust Blue - boutons actions primaires */
+  --text: #f8fafc;       
+  --muted: #94a3b8;      
+  --blue: #2563eb;       
   --blue-hover: #1d4ed8;
-  --green: #10b981;      /* Emerald - succès */
-  --red: #ef4444;        /* Erreur / Résiliation */
-  --amber: #f59e0b;      /* Avertissement */
-  --focus: #fbbf24;      /* Jaune focus pour malvoyants (Navigation clavier) */
-  --r: 8px; --rxl: 16px; --touch: 48px; /* Touch targets de 48px minimum pour accessibilité */
+  --green: #10b981;      
+  --red: #ef4444;        
+  --amber: #f59e0b;      
+  --focus: #fbbf24;      
+  --r: 8px; --rxl: 16px; --touch: 48px; 
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;font-size:16px;}
@@ -75,7 +75,7 @@ h1{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(2.2rem, 5vw, 4rem);f
 .field{margin-bottom:20px;}
 .field label{display:block;font-size:0.95rem;color:var(--text);margin-bottom:8px;font-weight:600;}
 .field input, .field select, .field textarea{width:100%;background:var(--ink);border:2px solid var(--ink3);border-radius:var(--r);color:var(--text);font-family:inherit;font-size:1rem;padding:12px;outline:none;min-height:var(--touch);}
-.field input:focus{border-color:var(--blue);}
+.field input:focus, .field select:focus{border-color:var(--blue);}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
 
 /* MESSAGES ARIA-LIVE */
@@ -141,7 +141,7 @@ td strong{color:var(--text);}
         <h1 id="hero-title">Automatisez votre pointage<br/>en toute sécurité.</h1>
         <p class="hero-sub">AutoPoint valide votre présence matin et après-midi (Lun-Ven) sans aucune intervention de votre part. Pensé pour être simple et accessible.</p>
         <div class="hero-cta">
-          <button class="btn btn-p" onclick="smartRedirect('reg')">Créer un compte</button>
+          <button class="btn btn-p" onclick="smartRedirect('reg', 'mensuel')">Démarrer dès 10€/mois</button>
         </div>
       </section>
 
@@ -202,12 +202,19 @@ td strong{color:var(--text);}
               <legend class="sr-only">Choix de la formule d'abonnement</legend>
               <h3 style="font-size:1.1rem;margin-bottom:15px;">Formule d'abonnement</h3>
               <div class="field">
-                <select id="r-plan">
+                <select id="r-plan" onchange="calcPrice()">
                   <option value="mensuel">Mensuel (10€ / mois)</option>
                   <option value="trimestriel">Trimestriel (25€ / trimestre)</option>
                 </select>
               </div>
-              <div class="field"><label for="r-promo">Code promotionnel (facultatif)</label><input type="text" id="r-promo" style="text-transform:uppercase;"/></div>
+              <div class="field" style="display:flex;gap:10px;align-items:flex-end;">
+                <div style="flex:1;">
+                  <label for="r-promo">Code promotionnel (facultatif)</label>
+                  <input type="text" id="r-promo" style="text-transform:uppercase;"/>
+                </div>
+                <button class="btn btn-g" onclick="applyPromo()">Vérifier</button>
+              </div>
+              <div id="msg-promo-client" class="msg" role="alert" style="margin-top:10px;"></div>
             </fieldset>
             
             <fieldset style="border:none; border-top:1px solid var(--line); padding-top:20px; margin-top:10px;">
@@ -303,18 +310,18 @@ td strong{color:var(--text);}
       <div id="as-promo" class="c-sec" role="tabpanel">
         <div class="auth-card" style="margin:0; max-width:100%; padding:30px;">
           <h3 style="margin-bottom:20px;">Générer un Code Promotionnel</h3>
-          <div id="msg-promo" class="msg" role="alert"></div>
+          <div id="msg-promo-admin" class="msg" role="alert"></div>
           <div class="row2">
-            <div class="field"><label>Nom du Code (ex: HIVER50)</label><input type="text" id="p-code" style="text-transform:uppercase;"/></div>
+            <div class="field"><label for="p-code">Nom du Code (ex: HIVER50)</label><input type="text" id="p-code" style="text-transform:uppercase;"/></div>
             <div class="field">
-              <label>Type de réduction</label>
+              <label for="p-type">Type de réduction</label>
               <select id="p-type">
                 <option value="pct">Pourcentage (%)</option>
                 <option value="fixed">Montant Fixe (€)</option>
               </select>
             </div>
           </div>
-          <div class="field"><label>Valeur (ex: 100 pour gratuit, ou 5 pour -5€)</label><input type="number" id="p-val" min="1"/></div>
+          <div class="field"><label for="p-val">Valeur (ex: 100 pour gratuit, ou 5 pour -5€)</label><input type="number" id="p-val" min="1"/></div>
           <button class="btn btn-p" onclick="createPromo()">Créer le code</button>
         </div>
         <h3 style="margin-top:40px;margin-bottom:15px;">Codes existants</h3>
@@ -331,7 +338,7 @@ td strong{color:var(--text);}
           <h3 style="margin-bottom:20px;">Modifier les informations bancaires (RIB / PayPal)</h3>
           <p style="color:var(--muted);margin-bottom:15px;">Ces instructions s'affichent aux clients quand ils veulent payer. Le système utilise votre session sécurisée pour valider la modification.</p>
           <div id="pay-msg" class="msg" role="alert"></div>
-          <div class="field"><textarea id="admin-pay-text" rows="8"></textarea></div>
+          <div class="field"><label for="admin-pay-text" class="sr-only">Vos informations bancaires</label><textarea id="admin-pay-text" rows="8"></textarea></div>
           <button class="btn btn-p btn-full" onclick="updatePaymentInstructions()">Enregistrer les modifications</button>
         </div>
       </div>
@@ -399,13 +406,13 @@ td strong{color:var(--text);}
 // --- CONFIGURATION ---
 const SB_URL = 'https://xnbfgxfxrbecbqfctzyd.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuYmZneGZ4cmJlY2JxZmN0enlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDg2NDEsImV4cCI6MjA5MzA4NDY0MX0.zr2XRABLOqEvUXFAk85ltkvUwGUfVMrdsUFAJkGjTL4';
-const DEMO = SB_URL === 'VOTRE_URL_SUPABASE';
-let sb = DEMO ? null : window.supabase.createClient(SB_URL, SB_ANON);
+const DEMO = false; // Désactivation du mode démo pour forcer Supabase
+const sb = window.supabase.createClient(SB_URL, SB_ANON);
 
 // --- FONCTIONS DE BASE ---
 const getSession = () => { try { return JSON.parse(sessionStorage.getItem('ap_sess')); } catch { return null; } };
 const setSession = u => sessionStorage.setItem('ap_sess', JSON.stringify(u));
-const announce = txt => document.getElementById('aria-announcer').textContent = txt;
+const announce = txt => { document.getElementById('aria-announcer').textContent = txt; };
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
@@ -432,31 +439,23 @@ function copyText(txt, fbid) {
   });
 }
 
-// --- LOGIQUE DE NAVIGATION GLOBALE (Le cerveau de l'UI) ---
-function smartRedirect(intent) {
+// --- LOGIQUE DE NAVIGATION GLOBALE ---
+function smartRedirect(intent, plan = null) {
   const s = getSession();
   
-  // Gestion de l'affichage du menu Navigation
   document.getElementById('btn-nav-login').style.display = s ? 'none' : 'block';
   document.getElementById('btn-nav-reg').style.display = s ? 'none' : 'block';
   document.getElementById('btn-nav-logout').style.display = s ? 'block' : 'none';
 
   if (s) {
-    // Si connecté, on bloque l'accès à la vitrine et à l'auth
-    if (s.is_admin) {
-      showPage('admin');
-      loadAdminData();
-    } else {
-      showPage('client');
-      loadClientData();
-    }
+    if (s.is_admin) { showPage('admin'); loadAdminData(); } 
+    else { showPage('client'); loadClientData(); }
   } else {
-    // Non connecté
-    if (intent === 'home') {
-      showPage('vitrine');
-    } else {
-      showPage('auth');
+    if (intent === 'home') { showPage('vitrine'); } 
+    else { 
+      showPage('auth'); 
       switchAuthTab(intent);
+      if(plan) selectPlan(plan);
     }
   }
 }
@@ -474,7 +473,44 @@ function doLogout() {
   announce('Déconnexion réussie');
 }
 
-// --- INSCRIPTION & CONNEXION ---
+// --- INSCRIPTION & PROMO ---
+let _promoObj = null;
+
+function selectPlan(p) {
+  const sel = document.getElementById('r-plan');
+  if(sel) sel.value = p;
+  calcPrice();
+}
+
+function calcPrice() {
+  const plan = document.getElementById('r-plan').value;
+  let basePrice = plan === 'trimestriel' ? 25 : 10;
+  let finalPrice = basePrice;
+  
+  if(_promoObj) {
+    finalPrice = _promoObj.type === 'pct' ? +(basePrice * (1 - _promoObj.value/100)).toFixed(2) : Math.max(0, basePrice - _promoObj.value);
+  }
+  return finalPrice;
+}
+
+async function applyPromo() {
+  const code = document.getElementById('r-promo').value.trim().toUpperCase();
+  if(!code) return showMsg('msg-promo-client', 'Veuillez entrer un code.', 'err');
+
+  // Interrogation de Supabase pour le code promo
+  const {data, error} = await sb.from('promo_codes').select('*').eq('code', code).eq('active', true).single();
+  
+  if(error || !data) {
+    _promoObj = null;
+    showMsg('msg-promo-client', 'Code invalide ou expiré.', 'err');
+  } else {
+    _promoObj = data;
+    let lbl = data.type === 'pct' ? `-${data.value}%` : `-${data.value}€`;
+    showMsg('msg-promo-client', `✅ Code appliqué : ${lbl}`, 'ok');
+  }
+  calcPrice();
+}
+
 async function doRegister() {
   const ps = document.getElementById('r-ps').value.trim();
   const em = document.getElementById('r-em').value.trim();
@@ -482,42 +518,28 @@ async function doRegister() {
   const pin = document.getElementById('r-pin').value.trim();
   const gl = document.getElementById('r-gl').value.trim();
   const gp = document.getElementById('r-gp').value;
-  const plan = document.getElementById('r-plan').value; // 'mensuel' ou 'trimestriel'
-  const promo = document.getElementById('r-promo').value.trim().toUpperCase();
+  const plan = document.getElementById('r-plan').value; 
   
   if(!ps || !pw || !gl || !gp || !em || !pin) return showMsg('msg-reg', 'Veuillez remplir tous les champs obligatoires (*).', 'err');
 
-  // Calcul du prix final
-  let basePrice = plan === 'trimestriel' ? 25 : 10;
-  let finalPrice = basePrice;
-  // LOGIQUE PROMO SIMPLIFIÉE POUR EXEMPLE
-  if(promo === 'GRATUIT100') finalPrice = 0; 
+  const finalPrice = calcPrice();
+  let daysToGive = plan === 'trimestriel' ? 90 : 30;
   
   let status = finalPrice === 0 ? 'actif' : 'inactif';
-  let daysToGive = plan === 'trimestriel' ? 90 : 30;
   let date_fin = finalPrice === 0 ? new Date(Date.now() + daysToGive*86400000).toISOString() : null; 
 
-  if(DEMO) {
-    setSession({pseudo:ps, plan_base: plan, statut_bot:status, date_fin_abonnement:date_fin});
-    smartRedirect('client');
-    openModal('payment');
-    return;
-  }
-
-  // Envoi vers Supabase (RPC)
   const {data, error} = await sb.rpc('register_user', {
     p_pseudo:ps, p_email:em, p_login_guinot:gl, p_mdp_guinot:gp, p_mdp_plain:pw, p_pin:pin, 
-    p_plan_amount: finalPrice+'€', p_promo_code: promo || null
+    p_plan_amount: finalPrice+'€', p_promo_code: _promoObj?.code || null
   });
   
-  if(error) { showMsg('msg-reg', error.message, 'err'); return; }
+  if(error) return showMsg('msg-reg', error.message || 'Erreur lors de l\'inscription.', 'err');
   
-  // Auto-activation si gratuit
+  // Auto-activation si le compte est gratuit
   if(finalPrice === 0) {
     await sb.from('users').update({statut_bot:'actif', date_fin_abonnement:date_fin}).eq('pseudo', ps);
   }
 
-  // Connexion automatique et redirection
   setSession({pseudo:ps, plan_base: plan, statut_bot:status, date_fin_abonnement:date_fin, _pwd:pw}); 
   smartRedirect('client');
   openModal('payment');
@@ -528,15 +550,12 @@ async function doLogin() {
   const pw = document.getElementById('l-pw').value;
   if(!ps || !pw) return showMsg('msg-login', 'Saisissez vos identifiants', 'err');
   
-  if(DEMO) { setSession({pseudo:ps, is_admin:ps==='admin'}); smartRedirect('intent'); return; }
-  
   const {data, error} = await sb.rpc('login_with_pseudo', {p_pseudo:ps, p_mdp_plain:pw});
-  if(error || !data.success) showMsg('msg-login', 'Identifiants incorrects', 'err');
-  else { 
-    data._pwd = pw; // Stockage local du mot de passe pour les actions sécurisées futures
-    setSession(data); 
-    smartRedirect('intent'); 
-  }
+  if(error || !data.success) return showMsg('msg-login', 'Identifiants incorrects', 'err');
+  
+  data._pwd = pw; // Stockage de sécurité pour les futures actions (identifiants, messagerie)
+  setSession(data); 
+  smartRedirect('intent'); 
 }
 
 // --- FONCTIONS CLIENT ---
@@ -552,9 +571,7 @@ async function loadClientData() {
   const s = getSession();
   document.getElementById('cd-name').textContent = s.pseudo;
   
-  // Configuration du Modal de Paiement de Renouvellement
   document.getElementById('lbl-pseudo').textContent = s.pseudo;
-  // Détermination du montant en fonction de sa formule de base (ignore les anciennes promos 100%)
   const renewalAmount = (s.plan_base === 'trimestriel' || s.plan_amount === '25€') ? '25€' : '10€';
   document.getElementById('lbl-montant').textContent = renewalAmount;
 
@@ -569,10 +586,8 @@ async function loadClientData() {
     document.getElementById('cd-days').textContent = '—';
   }
   
-  if(!DEMO){
-    const res = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
-    if(res.data) document.getElementById('payment-instructions-box').textContent = res.data.value;
-  }
+  const res = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
+  if(res.data) document.getElementById('payment-instructions-box').textContent = res.data.value;
 }
 
 async function updateClientCreds() {
@@ -582,16 +597,14 @@ async function updateClientCreds() {
   const gl = document.getElementById('uc-gl').value;
   const gp = document.getElementById('uc-gp').value;
 
-  if(!curr) return showMsg('msg-cred', 'Votre mot de passe actuel est requis par sécurité.', 'err');
-  
-  if(DEMO) return showMsg('msg-cred', 'Mise à jour simulée (Démo)', 'ok');
+  if(!curr) return showMsg('msg-cred', 'Votre mot de passe actuel est requis.', 'err');
 
   const {data, error} = await sb.rpc('client_update_credentials', {
     p_pseudo: s.pseudo, p_current_mdp: curr, p_new_auto_mdp: ap, p_new_g_login: gl, p_new_g_mdp: gp
   });
 
-  if(error || !data.success) showMsg('msg-cred', 'Mot de passe actuel incorrect ou erreur serveur.', 'err');
-  else showMsg('msg-cred', '✅ Identifiants mis à jour avec succès.', 'ok');
+  if(error || !data.success) showMsg('msg-cred', 'Mot de passe actuel incorrect ou erreur système.', 'err');
+  else showMsg('msg-cred', '✅ Identifiants mis à jour.', 'ok');
 }
 
 // --- FONCTIONS ADMIN ---
@@ -605,28 +618,27 @@ function swAdminTab(t) {
 }
 
 async function loadAdminData() {
-  if(DEMO) return;
   const {data: users} = await sb.from('users').select('*').neq('is_admin', true);
   const tbody = document.getElementById('atbody');
   tbody.innerHTML = '';
   
-  users.forEach(u => {
-    const left = u.date_fin_abonnement ? Math.max(0, Math.ceil((new Date(u.date_fin_abonnement) - new Date()) / 864e5)) : '—';
-    tbody.innerHTML += `<tr>
-      <td><strong>${u.pseudo}</strong><br><span style="color:var(--muted);font-size:0.9rem;">${u.email}</span></td>
-      <td style="font-family:monospace;">L: <span style="color:var(--blue);">${u.login_guinot}</span><br>P: <span style="color:var(--amber);">${u.mdp_guinot}</span></td>
-      <td>${u.plan_amount || '—'} <br><span style="color:var(--green);font-size:0.9rem;">${u.promo_code_used || ''}</span></td>
-      <td><span class="sbadge ${u.statut_bot==='actif'?'act':'wait'}">${u.statut_bot}</span><br><span style="font-size:0.9rem;">${left}j restants</span></td>
-      <td><button class="btn btn-p" style="font-size:0.9rem;padding:0 15px;min-height:36px;" onclick="openTimeModal('${u.pseudo}')">Gérer Jours</button></td>
-    </tr>`;
-  });
+  if(users) {
+    users.forEach(u => {
+      const left = u.date_fin_abonnement ? Math.max(0, Math.ceil((new Date(u.date_fin_abonnement) - new Date()) / 864e5)) : '—';
+      tbody.innerHTML += `<tr>
+        <td><strong>${u.pseudo}</strong><br><span style="color:var(--muted);font-size:0.9rem;">${u.email}</span></td>
+        <td style="font-family:monospace;">L: <span style="color:var(--blue);">${u.login_guinot}</span><br>P: <span style="color:var(--amber);">${u.mdp_guinot}</span></td>
+        <td>${u.plan_amount || '—'} <br><span style="color:var(--green);font-size:0.9rem;">${u.promo_code_used || ''}</span></td>
+        <td><span class="sbadge ${u.statut_bot==='actif'?'act':'wait'}">${u.statut_bot}</span><br><span style="font-size:0.9rem;">${left}j restants</span></td>
+        <td><button class="btn btn-p" style="font-size:0.9rem;padding:0 15px;min-height:36px;" onclick="openTimeModal('${u.pseudo}')">Gérer Jours</button></td>
+      </tr>`;
+    });
+  }
 
-  // Charger le texte de paiement dans le textarea admin
   const res = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
   if(res.data) document.getElementById('admin-pay-text').value = res.data.value;
 }
 
-// GESTION TEMPS ADMIN (SANS CHAMP DE MOT DE PASSE MANUEL)
 let _targetUser = null;
 function openTimeModal(pseudo) { 
   _targetUser = pseudo; 
@@ -636,48 +648,40 @@ function openTimeModal(pseudo) {
 
 async function execTime(action) {
   const s = getSession();
-  if(DEMO) return showMsg('mt-msg', 'Action simulée (Démo)', 'ok');
-
-  // L'admin envoie silencieusement son propre mot de passe (stocké lors du login) au RPC
   const {data, error} = await sb.rpc('admin_update_time', {
     p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_target_pseudo: _targetUser, p_action: action
   });
 
-  if(error || !data.success) showMsg('mt-msg', 'Accès refusé ou erreur système', 'err');
+  if(error || !data.success) showMsg('mt-msg', 'Accès refusé ou erreur serveur.', 'err');
   else {
     showMsg('mt-msg', '✅ Mise à jour du temps validée.', 'ok');
     setTimeout(() => { closeModal('time'); loadAdminData(); }, 1500);
   }
 }
 
-// GESTION PAIEMENT ADMIN (SANS CHAMP DE MOT DE PASSE MANUEL)
 async function updatePaymentInstructions() {
   const txt = document.getElementById('admin-pay-text').value;
-  if(DEMO) return showMsg('pay-msg', 'Sauvegarde simulée', 'ok');
-  
   const s = getSession();
+  
   const {data} = await sb.rpc('admin_update_payment', {p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_new_text: txt});
   
-  if(data?.success) showMsg('pay-msg', '✅ Instructions de paiement mises à jour pour tous les clients.', 'ok');
-  else showMsg('pay-msg', 'Erreur d\'autorisation.', 'err');
+  if(data?.success) showMsg('pay-msg', '✅ Instructions de paiement mises à jour.', 'ok');
+  else showMsg('pay-msg', 'Erreur de sauvegarde.', 'err');
 }
 
-// GESTION PROMO ADMIN
+// PROMO ADMIN
 async function createPromo() {
   const code = document.getElementById('p-code').value.trim().toUpperCase();
   const type = document.getElementById('p-type').value;
   const val = document.getElementById('p-val').value;
-  if(!code || !val) return showMsg('msg-promo', 'Remplissez le code et la valeur', 'err');
-  
-  if(DEMO) return showMsg('msg-promo', 'Code créé (Démo)', 'ok');
+  if(!code || !val) return showMsg('msg-promo-admin', 'Remplissez le code et la valeur', 'err');
   
   const {error} = await sb.from('promo_codes').insert({code, type, value: val, active: true});
-  if(error) showMsg('msg-promo', 'Le code existe déjà ou erreur.', 'err');
-  else { showMsg('msg-promo', '✅ Code généré.', 'ok'); loadAdminPromos(); }
+  if(error) showMsg('msg-promo-admin', 'Erreur : Code déjà existant.', 'err');
+  else { showMsg('msg-promo-admin', '✅ Code généré.', 'ok'); loadAdminPromos(); }
 }
 
 async function loadAdminPromos() {
-  if(DEMO) return;
   const {data} = await sb.from('promo_codes').select('*');
   const tbody = document.getElementById('pbody');
   tbody.innerHTML = '';
@@ -686,18 +690,19 @@ async function loadAdminPromos() {
       tbody.innerHTML += `<tr>
         <td><strong>${p.code}</strong></td>
         <td>${p.type==='pct'?p.value+'%':p.value+'€'}</td>
-        <td><span class="sbadge ${p.active?'act':'wait'}">${p.active?'Actif':'Désactivé'}</span></td>
+        <td><span class="sbadge ${p.active?'act':'wait'}">${p.active?'Actif':'Inactif'}</span></td>
         <td><button class="btn btn-g" style="min-height:30px;padding:0 10px;" onclick="togglePromo('${p.code}', ${!p.active})">${p.active?'Désactiver':'Activer'}</button></td>
       </tr>`;
     });
   }
 }
+
 async function togglePromo(code, state) {
   await sb.from('promo_codes').update({active: state}).eq('code', code);
   loadAdminPromos();
 }
 
-// --- MESSAGERIE SÉCURISÉE (TUNNELS RPC) ---
+// --- MESSAGERIE SÉCURISÉE ---
 let _chatTarget = null;
 
 async function sendMsg(sender) {
@@ -707,9 +712,7 @@ async function sendMsg(sender) {
   if(!txt) return;
   
   const targetPseudo = sender === 'client' ? s.pseudo : _chatTarget;
-  if(DEMO) { input.value = ''; return; }
 
-  // Appel au tunnel sécurisé
   await sb.rpc('secure_send_message', { p_pseudo: targetPseudo, p_mdp: s._pwd, p_sender: sender, p_content: txt });
   input.value = '';
   
@@ -718,7 +721,6 @@ async function sendMsg(sender) {
 }
 
 async function loadMessages(view, targetPseudo = null) {
-  if(DEMO) return;
   const s = getSession();
   const p = view === 'client' ? s.pseudo : targetPseudo;
   const box = document.getElementById(view === 'client' ? 'client-chat' : 'admin-chat');
@@ -732,7 +734,7 @@ async function loadMessages(view, targetPseudo = null) {
 
   box.innerHTML = '';
   if(!res.data || !res.data.success || !res.data.messages || res.data.messages.length === 0) {
-      box.innerHTML = '<p style="color:var(--muted);text-align:center;margin-top:20px;">Aucun message dans cette conversation.</p>';
+      box.innerHTML = '<p style="color:var(--muted);text-align:center;margin-top:20px;">Aucun message dans la conversation.</p>';
       return;
   }
   
@@ -744,7 +746,6 @@ async function loadMessages(view, targetPseudo = null) {
 }
 
 async function loadAdminMessages() {
-  if(DEMO) return;
   const s = getSession();
   const list = document.getElementById('adm-user-list');
   
@@ -777,7 +778,7 @@ async function openAdminChat(pseudo) {
   loadAdminMessages(); 
 }
 
-// INIT Lancement
+// LANCEMENT
 (async () => { smartRedirect('home'); })();
 </script>
 </body>
