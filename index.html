@@ -1,4 +1,4 @@
-<!DOCTYPE-- html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
@@ -253,8 +253,8 @@ footer button:hover{color:var(--text);}
   <div class="nav-r">
     <button class="nav-txt" onclick="showPage('cgu')">CGU</button>
     <button class="nav-txt" onclick="showPage('legal')">Mentions légales</button>
-    <button class="btn btn-g" onclick="showPage('home');switchTab('login')">Connexion</button>
-    <button class="btn btn-p" onclick="showPage('home');switchTab('reg');scrollToAuth()">S'inscrire</button>
+    <button class="btn btn-g" id="btn-nav-login" onclick="showPage('home');switchTab('login');scrollToAuth()">Connexion</button>
+    <button class="btn btn-p" id="btn-nav-reg" onclick="showPage('home');switchTab('reg');scrollToAuth()">S'inscrire</button>
   </div>
 </nav>
 
@@ -340,7 +340,7 @@ footer button:hover{color:var(--text);}
       </div>
       <div class="tabs-row" role="tablist">
         <button class="tab-btn on" id="tab-login" role="tab" aria-selected="true" aria-controls="pnl-login" onclick="switchTab('login')">Connexion</button>
-        <button class="tab-btn"    id="tab-reg"   role="tab" aria-selected="false" aria-controls="pnl-reg"   onclick="switchTab('reg')">Inscription</button>
+        <button class="tab-btn"    id="tab-reg"   role="tab" aria-selected="false" aria-controls="pnl-reg"    onclick="switchTab('reg')">Inscription</button>
       </div>
 
       <!-- LOGIN -->
@@ -582,8 +582,8 @@ footer button:hover{color:var(--text);}
 'use strict';
 
 // ══ CONFIG ════════════════════════════════════════════════════
-const SB_URL      = 'https://xnbfgxfxrbecbqfctzyd.supabase.co';   // https://xxxx.supabase.co
-const SB_ANON     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuYmZneGZ4cmJlY2JxZmN0enlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDg2NDEsImV4cCI6MjA5MzA4NDY0MX0.zr2XRABLOqEvUXFAk85ltkvUwGUfVMrdsUFAJkGjTL4';       // clé anon publique uniquement
+const SB_URL      = 'https://xnbfgxfxrbecbqfctzyd.supabase.co';
+const SB_ANON     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuYmZneGZ4cmJlY2JxZmN0enlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDg2NDEsImV4cCI6MjA5MzA4NDY0MX0.zr2XRABLOqEvUXFAk85ltkvUwGUfVMrdsUFAJkGjTL4';
 const CONTACT     = 'autopoint.service@proton.me';
 
 // ══ INIT SUPABASE ════════════════════════════════════════════
@@ -618,11 +618,9 @@ function scrollToAuth() {
 }
 
 // ══ TABS ══════════════════════════════════════════════════════
-// Panels existants dans le HTML
 const TAB_IDS = ['login', 'reg', 'reset'];
 
 function switchTab(t) {
-  // Masquer tous les panels
   TAB_IDS.forEach(id => {
     const p = document.getElementById('pnl-' + id);
     if (p) p.style.display = 'none';
@@ -631,17 +629,14 @@ function switchTab(t) {
   const ad = document.getElementById('admin-dash');
   if (ad) ad.style.display = 'none';
 
-  // Afficher le panel cible
   const pnl = document.getElementById('pnl-' + t);
   if (pnl) pnl.style.display = '';
 
-  // Mettre à jour les onglets visuels (login / reg seulement)
   const tabLogin = document.getElementById('tab-login');
   const tabReg   = document.getElementById('tab-reg');
   if (tabLogin) { tabLogin.classList.toggle('on', t === 'login'); tabLogin.setAttribute('aria-selected', t === 'login'); }
   if (tabReg)   { tabReg.classList.toggle('on', t === 'reg');     tabReg.setAttribute('aria-selected', t === 'reg'); }
 
-  // Nettoyer les messages
   ['login','reg','reset'].forEach(clearMsg);
 }
 
@@ -692,7 +687,6 @@ async function applyPromo() {
 
   let promo = null;
   if (DEMO) {
-    // Mode démo : simuler un code valide pour test
     promo = null;
   } else {
     const { data } = await sb.rpc('get_promo', { p_code: code });
@@ -754,20 +748,7 @@ async function loadPaymentInstructions() {
   const el = document.getElementById('payment-instructions');
   if (!el) return;
   if (DEMO) {
-    el.textContent = `Pour activer votre abonnement :
-
-1. Envoyez votre règlement à :
-   ${CONTACT}
-
-2. Mentionnez votre pseudo dans le message
-
-3. Formule mensuelle     : 10€/mois
-   Formule trimestrielle : 25€/trimestre
-
-Votre service sera activé sous 24h
-après confirmation du paiement.
-
-🔒 Aucune donnée bancaire ne transite par AutoPoint.`;
+    el.textContent = `Pour activer votre abonnement :\n\n1. Envoyez votre règlement à :\n   ${CONTACT}\n\n2. Mentionnez votre pseudo dans le message\n\n3. Formule mensuelle     : 10€/mois\n   Formule trimestrielle : 25€/trimestre\n\nVotre service sera activé sous 24h\naprès confirmation du paiement.\n\n🔒 Aucune donnée bancaire ne transite par AutoPoint.`;
     return;
   }
   const { data } = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
@@ -833,7 +814,6 @@ async function doRegister() {
   const planLabel  = plan === 'mensuel' ? 'Mensuel — 10€/mois' : 'Trimestriel — 25€/trimestre';
   const planAmount = final + '€' + (final < base ? ` (promo ${_promo?.code})` : '');
 
-  // Validations front-end
   if (!fn || !ln || !ps || !em || !gl || !gp || !pw || !pin) { showMsg('reg', '⚠️ Tous les champs obligatoires sont requis.', 'err'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showMsg('reg', '⚠️ Adresse email invalide.', 'err'); return; }
   if (/\s/.test(ps))   { showMsg('reg', '⚠️ Le pseudo ne doit pas contenir d\'espaces.', 'err'); return; }
@@ -885,9 +865,9 @@ async function doLogin() {
   }
 
   const sessionData = { ...data, _pwd: pw };
-setSession(sessionData);
-if (data.is_admin) { showAdminDash(); return; }
-showClientDash(data);
+  setSession(sessionData);
+  if (data.is_admin) { showAdminDash(); return; }
+  showClientDash(data);
 }
 
 // ══ RESET PIN ══════════════════════════════════════════════════
@@ -923,6 +903,12 @@ async function doResetPin() {
 
 // ══ CLIENT DASHBOARD ══════════════════════════════════════════
 function showClientDash(u) {
+  // Masquage des boutons de navigation "Connexion / Inscription"
+  const btnL = document.getElementById('btn-nav-login');
+  const btnR = document.getElementById('btn-nav-reg');
+  if (btnL) btnL.style.display = 'none';
+  if (btnR) btnR.style.display = 'none';
+
   TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
   document.getElementById('client-dash').style.display = '';
   const ad = document.getElementById('admin-dash'); if (ad) ad.style.display = 'none';
@@ -1023,16 +1009,32 @@ async function doDeleteAccount() {
     showMsg('delete', '❌ ' + (data?.error === 'wrong_password' ? 'Mot de passe incorrect.' : 'Erreur.'), 'err');
     return;
   }
-  clearSess(); closeModal('delete'); switchTab('login');
+  clearSess(); closeModal('delete'); doLogout();
   say('Compte supprimé définitivement');
   alert('✅ Compte supprimé conformément au RGPD.');
 }
 
 // ══ DÉCONNEXION ════════════════════════════════════════════════
-function doLogout() { clearSess(); switchTab('login'); say('Déconnecté'); }
+function doLogout() { 
+  clearSess(); 
+  // Réafficher les boutons
+  const btnL = document.getElementById('btn-nav-login');
+  const btnR = document.getElementById('btn-nav-reg');
+  if (btnL) btnL.style.display = '';
+  if (btnR) btnR.style.display = '';
+  
+  switchTab('login'); 
+  say('Déconnecté'); 
+}
 
 // ══ ADMIN DASHBOARD ════════════════════════════════════════════
 async function showAdminDash() {
+  // Masquage des boutons de navigation "Connexion / Inscription"
+  const btnL = document.getElementById('btn-nav-login');
+  const btnR = document.getElementById('btn-nav-reg');
+  if (btnL) btnL.style.display = 'none';
+  if (btnR) btnR.style.display = 'none';
+
   TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
   document.getElementById('client-dash').style.display = 'none';
   const tabLogin = document.getElementById('tab-login');
@@ -1049,18 +1051,20 @@ async function showAdminDash() {
   div.style.display = '';
   div.innerHTML = '<div style="text-align:center;padding:30px;"><div class="spinner"></div><p style="color:var(--muted);margin-top:10px;font-size:.83rem;">Chargement…</p></div>';
 
-  let allUsers = [], allPromos = [];
+  let allUsers = [], allPromos = [], currentPaymentText = "Contactez : " + CONTACT;
 
   if (DEMO) {
     allUsers  = JSON.parse(localStorage.getItem('ap_demo_users')  || '[]');
     allPromos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
   } else {
-    const [ru, rp] = await Promise.all([
+    const [ru, rp, rpay] = await Promise.all([
       sb.from('users').select('id,pseudo,prenom,nom,email,statut_bot,plan_label,date_fin_abonnement').neq('is_admin', true).order('created_at', { ascending: false }),
-      sb.from('promo_codes').select('*').order('created_at', { ascending: false })
+      sb.from('promo_codes').select('*').order('created_at', { ascending: false }),
+      sb.from('config').select('value').eq('key', 'payment_instructions').single()
     ]);
     allUsers  = ru.data  || [];
     allPromos = rp.data  || [];
+    if (rpay.data) currentPaymentText = rpay.data.value;
   }
 
   const actifs  = allUsers.filter(u => u.statut_bot === 'actif' || u.statut_bot === 'gratuit').length;
@@ -1117,6 +1121,7 @@ async function showAdminDash() {
     <div class="admin-tabs">
       <button class="at on" id="at-u" onclick="swAdminTab('u')">👥 Utilisateurs</button>
       <button class="at"    id="at-p" onclick="swAdminTab('p')">🎟️ Codes promo</button>
+      <button class="at"    id="at-pay" onclick="swAdminTab('pay')">💳 Infos Paiement</button>
     </div>
     <div id="as-u" class="admin-section on">
       <div class="filter-bar">
@@ -1145,12 +1150,26 @@ async function showAdminDash() {
       </div>
       <div id="promo-list">${promoRows}</div>
     </div>
+    <div id="as-pay" class="admin-section">
+      <div class="promo-admin-card">
+        <h3>Modifier les instructions de paiement</h3>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">Ces instructions s'affichent aux clients après leur inscription pour qu'ils puissent vous payer. Seul un administrateur peut modifier cette zone.</p>
+        <div class="field"><textarea id="admin-pay-text" rows="8" placeholder="Vos instructions..."></textarea></div>
+        <button class="btn btn-p" onclick="updatePaymentInstructions()">💾 Sauvegarder les modifications</button>
+        <div id="pay-msg" class="msg" style="margin-top:10px;"></div>
+      </div>
+    </div>
   `;
+
+  // Remplissage sécurisé du texte de paiement
+  const payTextEl = document.getElementById('admin-pay-text');
+  if (payTextEl) payTextEl.value = currentPaymentText;
+
   say('Panneau admin chargé. ' + allUsers.length + ' utilisateur(s).');
 }
 
 function swAdminTab(t) {
-  ['u','p'].forEach(id => {
+  ['u','p','pay'].forEach(id => {
     document.getElementById('at-' + id)?.classList.toggle('on', id === t);
     document.getElementById('as-' + id)?.classList.toggle('on', id === t);
   });
@@ -1158,6 +1177,27 @@ function swAdminTab(t) {
 function filterTbl() {
   const q = document.getElementById('asearch')?.value.toLowerCase() || '';
   document.querySelectorAll('#atbody tr').forEach(r => { r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+}
+
+async function updatePaymentInstructions() {
+  const text = document.getElementById('admin-pay-text').value.trim();
+  const msgEl = document.getElementById('pay-msg');
+
+  if (!text) { showEl(msgEl, 'Le texte ne peut pas être vide.', 'err'); return; }
+
+  if (DEMO) {
+    showEl(msgEl, '✅ Sauvegardé (Mode Démo)', 'ok');
+    return;
+  }
+
+  const s = getSession();
+  const { data, error } = await rpc('admin_update_payment', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_new_text: text });
+
+  if (error || !data?.success) {
+    showEl(msgEl, '❌ Erreur de sauvegarde : ' + (error?.message || data?.error), 'err');
+  } else {
+    showEl(msgEl, '✅ Instructions de paiement mises à jour avec succès !', 'ok');
+  }
 }
 
 // ══ ACTIVATION ADMIN ══════════════════════════════════════════
