@@ -1336,7 +1336,7 @@ async function execTime(action) {
     p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_target_pseudo: _targetUser, p_action: action
   });
 
-  // PLAN B INTÉGRÉ : Si tu n'as pas encore ajouté le script SQL sur Supabase, 
+  // PLAN B INTÉGRÉ : Si tu n'as pas encore ajouté le script SQL sur Supabase,
   // le Javascript va faire la mise à jour tout seul. Zéro bug possible.
   if (error && (error.message.includes('function') || error.code === 'PGRST202')) {
     console.warn("Patch SQL non trouvé, utilisation du fallback JavaScript.");
@@ -1352,10 +1352,14 @@ async function execTime(action) {
     }
   }
 
-  if (error || !data?.success) showMsg('mt-msg', 'Erreur serveur. Assurez-vous d\'être connecté en admin.', 'err');
-  else {
+  if (error || !data?.success) {
+    showMsg('mt-msg', 'Erreur serveur. Assurez-vous d\'être connecté en admin.', 'err');
+  } else {
     showMsg('mt-msg', '✅ Temps mis à jour !', 'ok');
-    setTimeout(() => { closeModal('time'); loadAdminData(); }, 1500);
+    setTimeout(() => { 
+        closeModal('time'); 
+        showAdminDash(); 
+    }, 1200);
   }
 }
 
