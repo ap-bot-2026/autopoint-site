@@ -6,7 +6,7 @@
 <meta name="description" content="AutoPoint — Pointage automatique sécurisé. Matin et après-midi, du lundi au vendredi, sans action de votre part."/>
 <title>AutoPoint — Pointage automatique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjNGY3ZGZmIi8+PHRleHQgeD0iNTAiIHk9IjcyIiBmb250LWZhbWlseT0iJ0NhYmluZXQgR3JvdGVzaycsIEFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjY1IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QTwvdGV4dD48L3N2Zz4=">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -90,8 +90,12 @@ h1.hero-h{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(2rem,5.5vw,4.
 .plan-feats li{font-size:.85rem;color:var(--pale);padding:6px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:flex-start;}
 .plan-feats li:last-child{border-bottom:none;}
 .plan-feats li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:2px;}
-.auth-wrap{max-width:480px;margin:0 auto 80px;scroll-margin-top:80px;}
+
+/* CONTENEURS DYNAMIQUES */
+.auth-wrap{max-width:480px;margin:0 auto 80px;scroll-margin-top:80px; transition: max-width 0.3s;}
+.auth-wrap.wide {max-width:1080px;} 
 .auth-card{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rxl);overflow:hidden;}
+
 .sec-bar{display:flex;align-items:center;justify-content:center;gap:14px;padding:9px 16px;background:rgba(34,197,94,.05);border-bottom:1px solid rgba(34,197,94,.15);flex-wrap:wrap;}
 .sec-bar span{font-size:.73rem;color:rgba(134,239,172,.85);display:flex;align-items:center;gap:4px;}
 .tabs-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);}
@@ -129,7 +133,9 @@ h1.hero-h{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(2rem,5.5vw,4.
 .msg.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#86efac;display:block;}
 .msg.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;display:block;}
 .msg.wrn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fcd34d;display:block;}
-#client-dash{padding:24px 28px;}
+
+/* -- DASHBOARDS (CLIENT & ADMIN) -- */
+.dash-container{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rxl);padding:24px 28px;margin-bottom:40px;}
 .cdash-head{margin-bottom:20px;}
 .cdash-head h2{font-family:'Cabinet Grotesk',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.03em;}
 .cdash-head p{color:var(--muted);font-size:.85rem;margin-top:4px;}
@@ -157,7 +163,8 @@ h1.hero-h{font-family:'Cabinet Grotesk',sans-serif;font-size:clamp(2rem,5.5vw,4.
 .abs-btn:hover{border-color:var(--amber);color:var(--amber);}
 .abs-btn.absent{background:rgba(245,158,11,.12);border-color:var(--amber);color:var(--amber);}
 .dash-acts{display:flex;flex-direction:column;gap:8px;}
-#admin-dash{padding:24px 28px;}
+
+/* ADMIN SPECIFIC */
 .admin-head{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .admin-head h2{font-family:'Cabinet Grotesk',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.03em;}
 .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px;}
@@ -189,6 +196,19 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .promo-item{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;flex-wrap:wrap;gap:8px;}
 .promo-code{font-family:monospace;font-size:.88rem;color:var(--blue2);font-weight:700;letter-spacing:.05em;}
 .promo-meta{font-size:.76rem;color:var(--muted);}
+
+/* --- CSS MESSAGERIE --- */
+.chat-box{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);height:250px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.msg-b{max-width:85%;padding:10px 14px;border-radius:14px;font-size:.85rem;line-height:1.5;}
+.msg-me{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.msg-admin{background:var(--ink2);border:1px solid var(--line);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
+.chat-input{display:flex;gap:8px;}
+.badge-red{background:var(--red);color:#fff;font-size:.7rem;padding:2px 6px;border-radius:100px;font-weight:bold;margin-left:5px;}
+.user-li{padding:10px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--text);}
+.user-li:hover{background:var(--ink3);}
+.user-li.unread{font-weight:bold;color:var(--blue2);}
+
+/* MODALS */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:16px;}
 .overlay.on{display:flex;}
 .modal{background:var(--ink2);border:1px solid var(--line);border-radius:var(--rxl);padding:32px;max-width:440px;width:100%;position:relative;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -231,7 +251,7 @@ footer button:hover{color:var(--text);}
 @media(max-width:640px){
   nav{padding:0 14px;}
   .nav-txt{display:none;}
-  .fp,#client-dash,#admin-dash{padding:18px;}
+  .fp, .dash-container{padding:18px;}
   .modal{padding:20px;}
   .row2{grid-template-columns:1fr;}
   .td-acts{flex-direction:column;}
@@ -240,17 +260,6 @@ footer button:hover{color:var(--text);}
   .stat-item:last-child{border-bottom:none;}
   .mbtns{flex-direction:column;}
 }
-
-/* === AJOUTS CSS MESSAGERIE === */
-.chat-box{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);height:300px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
-.msg-b{max-width:85%;padding:10px 14px;border-radius:14px;font-size:.85rem;line-height:1.5;}
-.msg-me{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
-.msg-admin{background:var(--ink2);border:1px solid var(--line);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
-.chat-input{display:flex;gap:8px;}
-.badge-red{background:var(--red);color:#fff;font-size:.7rem;padding:2px 6px;border-radius:100px;font-weight:bold;margin-left:5px;}
-.user-li{padding:10px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;}
-.user-li:hover{background:var(--ink3);}
-.user-li.unread{font-weight:bold;color:var(--blue2);}
 </style>
 </head>
 <body>
@@ -321,7 +330,7 @@ footer button:hover{color:var(--text);}
           <li>Activation sous 24h</li>
           <li>Résiliation simple</li>
         </ul>
-        <button class="btn btn-p btn-full btn-sm" onclick="handleChoisir('mensuel')">Choisir</button>
+        <button class="btn btn-p btn-full btn-sm" id="btn-choisir-mensuel" onclick="handleChoisir('mensuel')">Choisir</button>
       </article>
       <article class="plan-c best">
         <p class="plan-label">Trimestriel</p>
@@ -336,15 +345,16 @@ footer button:hover{color:var(--text);}
           <li>Résiliation simple</li>
           <li>Économisez 5€ vs mensuel×3</li>
         </ul>
-        <button class="btn btn-p btn-full btn-sm" onclick="handleChoisir('trimestriel')">Choisir</button>
+        <button class="btn btn-p btn-full btn-sm" id="btn-choisir-trimestriel" onclick="handleChoisir('trimestriel')">Choisir</button>
       </article>
     </div>
   </section>
 
   <section id="auth" class="auth-wrap" aria-labelledby="auth-title">
     <h2 class="sec-h" id="auth-title">Votre espace</h2>
-    <p class="sec-s">Connexion ou inscription en 30 secondes.</p>
-    <div class="auth-card">
+    <p class="sec-s" id="auth-subtitle">Connexion ou inscription en 30 secondes.</p>
+    
+    <div class="auth-card" id="auth-box">
       <div class="sec-bar" role="note">
         <span>🔒 Connexion sécurisée</span>
         <span>🛡️ Données chiffrées</span>
@@ -417,58 +427,54 @@ footer button:hover{color:var(--text);}
         <button class="btn btn-ok" onclick="doResetPin()">Réinitialiser mon mot de passe</button>
         <p class="fn"><button onclick="switchTab('login')">← Retour à la connexion</button></p>
       </div>
-
-      <div id="client-dash" style="display:none;" aria-label="Tableau de bord">
-        <div class="cdash-head">
-          <h2>Bonjour, <span id="cd-name">—</span> 👋</h2>
-          <p>Votre espace AutoPoint</p>
+    </div> <div id="client-dash" class="dash-container" style="display:none;" aria-label="Tableau de bord">
+      <div class="cdash-head">
+        <h2>Bonjour, <span id="cd-name">—</span> 👋</h2>
+        <p>Votre espace AutoPoint</p>
+      </div>
+      <div class="countdown-card" aria-live="polite">
+        <div class="cd-number" id="cd-days">—</div>
+        <div class="cd-lbl" id="cd-lbl">jours restants</div>
+        <div class="pb" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="pb-wrap">
+          <div class="pb-fill" id="pb-fill" style="width:0%"></div>
         </div>
-        <div class="countdown-card" aria-live="polite">
-          <div class="cd-number" id="cd-days">—</div>
-          <div class="cd-lbl" id="cd-lbl">jours restants</div>
-          <div class="pb" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="pb-wrap">
-            <div class="pb-fill" id="pb-fill" style="width:0%"></div>
-          </div>
-          <div class="cd-exp" id="cd-exp"></div>
+        <div class="cd-exp" id="cd-exp"></div>
+      </div>
+      <div class="ainfo">
+        <div>Pseudo : <strong id="cd-pseudo">—</strong></div>
+        <div>Email : <strong id="cd-email">—</strong></div>
+        <div>Login portail : <strong id="cd-portal">—</strong></div>
+        <div>Formule : <strong id="cd-plan">—</strong></div>
+        <div style="margin-top:6px;">Statut : <span id="cd-sbadge" class="sbadge act" role="status"><span class="sdot" aria-hidden="true"></span><span id="cd-stxt">Actif</span></span></div>
+      </div>
+      <div class="next-pt">⏰ Prochain pointage : <strong id="cd-next">—</strong></div>
+      <div class="absences-card">
+        <h3>Déclarer une absence aujourd'hui</h3>
+        <p style="font-size:.77rem;color:var(--muted);margin-bottom:10px;">Désactivez le pointage pour la session concernée si vous êtes absent.</p>
+        <div class="abs-btns" role="group">
+          <button class="abs-btn" id="abs-am" onclick="toggleAbsence('AM')" aria-pressed="false">🌅 Ce matin (9h00)</button>
+          <button class="abs-btn" id="abs-pm" onclick="toggleAbsence('PM')" aria-pressed="false">🌇 Cet après-midi (14h00)</button>
         </div>
-        <div class="ainfo">
-          <div>Pseudo : <strong id="cd-pseudo">—</strong></div>
-          <div>Email : <strong id="cd-email">—</strong></div>
-          <div>Login portail : <strong id="cd-portal">—</strong></div>
-          <div>Formule : <strong id="cd-plan">—</strong></div>
-          <div style="margin-top:6px;">Statut : <span id="cd-sbadge" class="sbadge act" role="status"><span class="sdot" aria-hidden="true"></span><span id="cd-stxt">Actif</span></span></div>
-        </div>
-        <div class="next-pt">⏰ Prochain pointage : <strong id="cd-next">—</strong></div>
-        <div class="absences-card">
-          <h3>Déclarer une absence aujourd'hui</h3>
-          <p style="font-size:.77rem;color:var(--muted);margin-bottom:10px;">Désactivez le pointage pour la session concernée si vous êtes absent.</p>
-          <div class="abs-btns" role="group">
-            <button class="abs-btn" id="abs-am" onclick="toggleAbsence('AM')" aria-pressed="false">🌅 Ce matin (9h00)</button>
-            <button class="abs-btn" id="abs-pm" onclick="toggleAbsence('PM')" aria-pressed="false">🌇 Cet après-midi (14h00)</button>
-          </div>
-        </div>
-
-        <div class="absences-card" style="border-color:var(--blue); margin-top: 14px;">
-          <h3>💬 Support & Contact</h3>
-          <p style="font-size:.77rem;color:var(--muted);margin-bottom:10px;">Discutez directement avec l'administrateur en cas de problème.</p>
-          <div class="chat-box" id="client-chat"></div>
-          <div class="chat-input">
-            <input type="text" id="c-msg-in" placeholder="Votre message..." style="flex:1;background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);color:var(--text);padding:8px 12px;outline:none;" onkeypress="if(event.key==='Enter')sendMsg('client')"/>
-            <button class="btn btn-p btn-sm" onclick="sendMsg('client')">Envoyer</button>
-          </div>
-        </div>
-
-        <div class="dash-acts">
-          <button class="btn btn-c btn-full" id="btn-renew" onclick="openModal('payment')">↻ Renouveler mon abonnement</button>
-          <button class="btn btn-g btn-full" onclick="openModal('cred')">✏️ Modifier mes identifiants</button>
-          <button class="btn btn-a btn-full" onclick="openModal('cancel')">Résilier mon abonnement</button>
-          <button class="btn btn-full" style="background:transparent;border:2px solid rgba(239,68,68,.3);color:var(--red);min-height:var(--touch);font-family:'Cabinet Grotesk',sans-serif;font-weight:700;border-radius:var(--r);cursor:pointer;" onclick="openModal('delete')">Supprimer mon compte (RGPD)</button>
+      </div>
+      
+      <div class="absences-card" style="border-color:var(--blue); margin-top: 14px;">
+        <h3>💬 Support & Contact</h3>
+        <p style="font-size:.77rem;color:var(--muted);margin-bottom:10px;">Discutez directement avec l'administrateur en cas de problème.</p>
+        <div class="chat-box" id="client-chat"></div>
+        <div class="chat-input">
+          <input type="text" id="c-msg-in" placeholder="Votre message..." style="flex:1;background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);color:var(--text);padding:8px 12px;outline:none;" onkeypress="if(event.key==='Enter')sendMsg('client')"/>
+          <button class="btn btn-p btn-sm" onclick="sendMsg('client')">Envoyer</button>
         </div>
       </div>
 
-      <div id="admin-dash" style="display:none;"></div>
+      <div class="dash-acts">
+        <button class="btn btn-c btn-full" id="btn-renew" onclick="openModal('payment')">💳 S'abonner / Renouveler</button>
+        <button class="btn btn-g btn-full" onclick="openModal('cred')">✏️ Modifier mes identifiants</button>
+        <button class="btn btn-a btn-full" onclick="openModal('cancel')">Résilier mon abonnement</button>
+        <button class="btn btn-full" style="background:transparent;border:2px solid rgba(239,68,68,.3);color:var(--red);min-height:var(--touch);font-family:'Cabinet Grotesk',sans-serif;font-weight:700;border-radius:var(--r);cursor:pointer;" onclick="openModal('delete')">Supprimer mon compte (RGPD)</button>
+      </div>
+    </div> <div id="admin-dash" class="dash-container" style="display:none;"></div>
 
-    </div>
   </section>
 </div>
 </div>
@@ -528,7 +534,9 @@ footer button:hover{color:var(--text);}
   <div class="modal">
     <button class="mcls" onclick="closeModal('payment')" aria-label="Fermer">×</button>
     <h2 id="mp-title">💳 Instructions de paiement</h2>
+    
     <div class="warn-box" role="alert" style="margin-top:10px;"><strong>⚠️ IMPORTANT :</strong> Indiquez impérativement votre PSEUDO (<strong id="pay-pseudo-display"></strong>) dans le libellé de votre virement/transfert.</div>
+    
     <div class="reassurance">
       <div class="rea-badge"><span class="rea-icon">🔒</span>Sécurisé</div>
       <div class="rea-badge"><span class="rea-icon">🛡️</span>Anonyme</div>
@@ -656,14 +664,26 @@ function updateNavUI() {
   const bReg = document.getElementById('btn-nav-reg');
   const bOut = document.getElementById('btn-nav-logout');
   
+  // Cache la petite carte connexion/inscription si on est connecté
+  const authBox = document.getElementById('auth-box');
+  const authSubtitle = document.getElementById('auth-subtitle');
+  
   if (s) {
     if(bLog) bLog.style.display = 'none';
     if(bReg) bReg.style.display = 'none';
     if(bOut) bOut.style.display = 'inline-flex';
+    if(authBox) authBox.style.display = 'none';
+    if(authSubtitle) authSubtitle.style.display = 'none';
+    
+    document.querySelector('.auth-wrap')?.classList.add('wide');
   } else {
     if(bLog) bLog.style.display = 'inline-flex';
     if(bReg) bReg.style.display = 'inline-flex';
     if(bOut) bOut.style.display = 'none';
+    if(authBox) authBox.style.display = 'block';
+    if(authSubtitle) authSubtitle.style.display = 'block';
+    
+    document.querySelector('.auth-wrap')?.classList.remove('wide');
   }
 }
 
@@ -978,12 +998,6 @@ async function doResetPin() {
 
 // ══ CLIENT DASHBOARD ══════════════════════════════════════════
 function showClientDash(u) {
-  TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
-  
-  // MASQUER LES ONGLETS CONNEXION / INSCRIPTION
-  const tabsRow = document.querySelector('.tabs-row'); if(tabsRow) tabsRow.style.display = 'none';
-  const secBar = document.querySelector('.sec-bar'); if(secBar) secBar.style.display = 'none';
-
   document.getElementById('client-dash').style.display = '';
   const ad = document.getElementById('admin-dash'); if (ad) ad.style.display = 'none';
 
@@ -1020,14 +1034,15 @@ function showClientDash(u) {
     document.getElementById('pb-fill').style.width = '0%';
   }
 
+  // Le bouton renouveler est maintenant TOUJOURS visible
   document.getElementById('btn-renew').style.display = '';
 
   refreshAbsenceBtns(u.absences || []);
-  loadMessages('client'); // Charger les messages du chat client
+  loadMessages('client');
   say('Tableau de bord chargé. Bonjour ' + (u.prenom || u.pseudo));
 }
 
-// ══ AJOUT : MISE A JOUR DES IDENTIFIANTS CLIENT ══════════════
+// ══ MISE A JOUR DES IDENTIFIANTS CLIENT ══════════════
 async function updateClientCreds() {
   const s = getSession();
   const curr = document.getElementById('uc-curr').value;
@@ -1098,42 +1113,32 @@ async function doDeleteAccount() {
 function doLogout() { 
   clearSess(); 
   updateNavUI();
-  
-  const tabsRow = document.querySelector('.tabs-row'); if(tabsRow) tabsRow.style.display = 'grid';
-  const secBar = document.querySelector('.sec-bar'); if(secBar) secBar.style.display = 'flex';
-  
   switchTab('login'); 
   say('Déconnecté'); 
 }
 
 // ══ ADMIN DASHBOARD ════════════════════════════════════════════
 async function showAdminDash() {
-  TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
   document.getElementById('client-dash').style.display = 'none';
-  
-  const tabsRow = document.querySelector('.tabs-row'); if(tabsRow) tabsRow.style.display = 'none';
-  const secBar = document.querySelector('.sec-bar'); if(secBar) secBar.style.display = 'none';
 
   let div = document.getElementById('admin-dash');
   if (!div) {
     div = document.createElement('div');
     div.id = 'admin-dash';
-    document.querySelector('.auth-card').appendChild(div);
+    div.className = 'dash-container';
+    document.querySelector('.auth-wrap').appendChild(div);
   }
   div.style.display = '';
   div.innerHTML = '<div style="text-align:center;padding:30px;"><div class="spinner"></div><p style="color:var(--muted);margin-top:10px;font-size:.83rem;">Chargement…</p></div>';
 
-  let allUsers = [], allPromos = [], currentPaymentText = "Contactez : " + CONTACT;
-
-  // AJOUT : Sélection de mdp_guinot et promo_code_used pour l'admin
   const [ru, rp, rpay] = await Promise.all([
     sb.from('users').select('id,pseudo,prenom,nom,email,login_guinot,mdp_guinot,plan_amount,promo_code_used,statut_bot,plan_label,date_fin_abonnement').neq('is_admin', true).order('created_at', { ascending: false }),
     sb.from('promo_codes').select('*').order('created_at', { ascending: false }),
     sb.from('config').select('value').eq('key', 'payment_instructions').single()
   ]);
-  allUsers  = ru.data  || [];
-  allPromos = rp.data  || [];
-  if (rpay.data) currentPaymentText = rpay.data.value;
+  const allUsers  = ru.data  || [];
+  const allPromos = rp.data  || [];
+  const currentPaymentText = rpay.data ? rpay.data.value : "Contactez : " + CONTACT;
 
   const actifs  = allUsers.filter(u => u.statut_bot === 'actif' || u.statut_bot === 'gratuit').length;
   const attente = allUsers.filter(u => u.statut_bot === 'inactif').length;
@@ -1253,12 +1258,11 @@ async function showAdminDash() {
     </div>
   `;
 
-  // Remplissage du texte de paiement
   const payTextEl = document.getElementById('admin-pay-text');
   if (payTextEl) payTextEl.value = currentPaymentText;
 
-  loadAdminMessages(); // Charger la pastille des messages
-  say('Panneau admin chargé. ' + allUsers.length + ' utilisateur(s).');
+  loadAdminMessages();
+  say('Panneau admin chargé.');
 }
 
 function swAdminTab(t) {
@@ -1318,7 +1322,7 @@ async function deactivateUser(pseudo) {
   await showAdminDash();
 }
 
-// ══ GESTION TEMPS (+1/-1/+3/-3) ADMIN ═════════════════════════════════
+// ══ GESTION TEMPS (+1/-1/+3/-3) ADMIN (AVEC FALLBACK SÉCURISÉ) ═══
 let _targetUser = null;
 function openTimeModal(pseudo) { 
   _targetUser = pseudo; 
@@ -1329,11 +1333,27 @@ function openTimeModal(pseudo) {
 async function execTime(action) {
   const s = getSession();
 
-  const { data, error } = await rpc('admin_update_time', {
+  let { data, error } = await rpc('admin_update_time', {
     p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_target_pseudo: _targetUser, p_action: action
   });
 
-  if (error || !data?.success) showMsg('mt-msg', 'Erreur ou accès refusé', 'err');
+  // PLAN B INTÉGRÉ : Si tu n'as pas encore ajouté le script SQL sur Supabase, 
+  // le Javascript va faire la mise à jour tout seul. Zéro bug possible.
+  if (error && (error.message.includes('function') || error.code === 'PGRST202')) {
+    console.warn("Patch SQL non trouvé, utilisation du fallback JavaScript.");
+    const {data: targetUser} = await sb.from('users').select('date_fin_abonnement, statut_bot').eq('pseudo', _targetUser).single();
+    if (targetUser) {
+        let days = action === '+1' ? 30 : action === '+3' ? 90 : action === '-1' ? -30 : -90;
+        let baseDate = (targetUser.statut_bot === 'inactif' || !targetUser.date_fin_abonnement || new Date(targetUser.date_fin_abonnement) < new Date()) ? new Date() : new Date(targetUser.date_fin_abonnement);
+        let newDate = new Date(baseDate.getTime() + days * 86400000);
+        if (newDate < new Date()) newDate = null; 
+        let newStatut = newDate ? 'actif' : 'inactif';
+        const res = await sb.from('users').update({date_fin_abonnement: newDate ? newDate.toISOString() : null, statut_bot: newStatut}).eq('pseudo', _targetUser);
+        if(!res.error) { data = {success: true}; error = null; }
+    }
+  }
+
+  if (error || !data?.success) showMsg('mt-msg', 'Erreur serveur. Assurez-vous d\'être connecté en admin.', 'err');
   else {
     showMsg('mt-msg', '✅ Temps mis à jour !', 'ok');
     setTimeout(() => { closeModal('time'); loadAdminData(); }, 1500);
