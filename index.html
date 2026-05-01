@@ -241,14 +241,14 @@ footer button:hover{color:var(--text);}
   .mbtns{flex-direction:column;}
 }
 
-/* --- AJOUTS CSS MESSAGERIE --- */
-.chat-box{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);height:250px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+/* === AJOUTS CSS MESSAGERIE === */
+.chat-box{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);height:300px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
 .msg-b{max-width:85%;padding:10px 14px;border-radius:14px;font-size:.85rem;line-height:1.5;}
 .msg-me{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
 .msg-admin{background:var(--ink2);border:1px solid var(--line);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
 .chat-input{display:flex;gap:8px;}
 .badge-red{background:var(--red);color:#fff;font-size:.7rem;padding:2px 6px;border-radius:100px;font-weight:bold;margin-left:5px;}
-.user-li{padding:10px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--text);}
+.user-li{padding:10px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:.85rem;}
 .user-li:hover{background:var(--ink3);}
 .user-li.unread{font-weight:bold;color:var(--blue2);}
 </style>
@@ -267,6 +267,7 @@ footer button:hover{color:var(--text);}
     <button class="nav-txt" onclick="showPage('legal')">Mentions légales</button>
     <button class="btn btn-g" id="btn-nav-login" onclick="showPage('home');switchTab('login');scrollToAuth()">Connexion</button>
     <button class="btn btn-p" id="btn-nav-reg" onclick="showPage('home');switchTab('reg');scrollToAuth()">S'inscrire</button>
+    <button class="btn btn-r" id="btn-nav-logout" style="display:none;" onclick="doLogout()">Déconnexion</button>
   </div>
 </nav>
 
@@ -277,7 +278,7 @@ footer button:hover{color:var(--text);}
     <h1 class="hero-h" id="hero-title">Arrêtez de pointer<br/><span class="gr">manuellement.</span></h1>
     <p class="hero-sub">AutoPoint pointe à votre place chaque matin à 8h et chaque après-midi à 13h, du lundi au vendredi — sans aucune action de votre part.</p>
     <div class="hero-cta">
-      <button class="btn btn-p" onclick="switchTab('reg');scrollToAuth()">Démarrer dès 10€/mois</button>
+      <button class="btn btn-p" onclick="handleChoisir('mensuel')">Démarrer dès 10€/mois</button>
       <button class="btn btn-g" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">Comment ça marche</button>
     </div>
     <div class="trust-bar" role="list" aria-label="Indicateurs de confiance">
@@ -320,7 +321,7 @@ footer button:hover{color:var(--text);}
           <li>Activation sous 24h</li>
           <li>Résiliation simple</li>
         </ul>
-        <button class="btn btn-p btn-full btn-sm" onclick="switchTab('reg');selectPlan('mensuel');scrollToAuth()">Choisir</button>
+        <button class="btn btn-p btn-full btn-sm" onclick="handleChoisir('mensuel')">Choisir</button>
       </article>
       <article class="plan-c best">
         <p class="plan-label">Trimestriel</p>
@@ -335,7 +336,7 @@ footer button:hover{color:var(--text);}
           <li>Résiliation simple</li>
           <li>Économisez 5€ vs mensuel×3</li>
         </ul>
-        <button class="btn btn-p btn-full btn-sm" onclick="switchTab('reg');selectPlan('trimestriel');scrollToAuth()">Choisir</button>
+        <button class="btn btn-p btn-full btn-sm" onclick="handleChoisir('trimestriel')">Choisir</button>
       </article>
     </div>
   </section>
@@ -446,7 +447,7 @@ footer button:hover{color:var(--text);}
             <button class="abs-btn" id="abs-pm" onclick="toggleAbsence('PM')" aria-pressed="false">🌇 Cet après-midi (14h00)</button>
           </div>
         </div>
-        
+
         <div class="absences-card" style="border-color:var(--blue); margin-top: 14px;">
           <h3>💬 Support & Contact</h3>
           <p style="font-size:.77rem;color:var(--muted);margin-bottom:10px;">Discutez directement avec l'administrateur en cas de problème.</p>
@@ -458,11 +459,10 @@ footer button:hover{color:var(--text);}
         </div>
 
         <div class="dash-acts">
-          <button class="btn btn-c btn-full" id="btn-renew" style="display:none;" onclick="openModal('payment')">↻ Renouveler mon abonnement</button>
+          <button class="btn btn-c btn-full" id="btn-renew" onclick="openModal('payment')">↻ Renouveler mon abonnement</button>
           <button class="btn btn-g btn-full" onclick="openModal('cred')">✏️ Modifier mes identifiants</button>
           <button class="btn btn-a btn-full" onclick="openModal('cancel')">Résilier mon abonnement</button>
           <button class="btn btn-full" style="background:transparent;border:2px solid rgba(239,68,68,.3);color:var(--red);min-height:var(--touch);font-family:'Cabinet Grotesk',sans-serif;font-weight:700;border-radius:var(--r);cursor:pointer;" onclick="openModal('delete')">Supprimer mon compte (RGPD)</button>
-          <button class="btn btn-r btn-full" onclick="doLogout()">Se déconnecter</button>
         </div>
       </div>
 
@@ -528,9 +528,7 @@ footer button:hover{color:var(--text);}
   <div class="modal">
     <button class="mcls" onclick="closeModal('payment')" aria-label="Fermer">×</button>
     <h2 id="mp-title">💳 Instructions de paiement</h2>
-    
     <div class="warn-box" role="alert" style="margin-top:10px;"><strong>⚠️ IMPORTANT :</strong> Indiquez impérativement votre PSEUDO (<strong id="pay-pseudo-display"></strong>) dans le libellé de votre virement/transfert.</div>
-    
     <div class="reassurance">
       <div class="rea-badge"><span class="rea-icon">🔒</span>Sécurisé</div>
       <div class="rea-badge"><span class="rea-icon">🛡️</span>Anonyme</div>
@@ -538,7 +536,7 @@ footer button:hover{color:var(--text);}
     </div>
     <div class="cbox" id="payment-instructions">Chargement…</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-      <button class="copy-btn" onclick="copyText('autopoint.service@proton.me','copy-fb')">📋 Copier RIB/Email</button>
+      <button class="copy-btn" onclick="copyText('autopoint.service@proton.me','copy-fb')">📋 Copier Email/RIB</button>
       <button class="copy-btn" onclick="copyPseudo()">👤 Copier mon pseudo</button>
       <button class="copy-btn" id="copy-amount-btn" onclick="copyAmount()">💶 Copier le montant</button>
     </div>
@@ -602,6 +600,21 @@ footer button:hover{color:var(--text);}
   </div>
 </div>
 
+<div class="overlay" id="modal-time" role="dialog" aria-modal="true" aria-labelledby="mt-title">
+  <div class="modal">
+    <button class="mcls" onclick="closeModal('time')" aria-label="Fermer">×</button>
+    <h2 id="mt-title">Gestion Temps: <span id="mt-user" style="color:var(--blue2);"></span></h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px;">Le cumul est intelligent. Ne descend pas sous 0.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
+      <button class="btn btn-p" onclick="execTime('+1')">+ 1 Mois</button>
+      <button class="btn btn-c" style="color:var(--amber);" onclick="execTime('-1')">- 1 Mois</button>
+      <button class="btn" style="background:var(--cyan);color:#000;" onclick="execTime('+3')">+ 3 Mois</button>
+      <button class="btn btn-r" onclick="execTime('-3')">- 3 Mois</button>
+    </div>
+    <div id="mt-msg" class="msg"></div>
+  </div>
+</div>
+
 <footer role="contentinfo">
   <strong style="font-family:'Cabinet Grotesk',sans-serif;color:var(--text);">AutoPoint</strong>
   &nbsp;·&nbsp;<button onclick="showPage('cgu')">CGU</button>
@@ -619,13 +632,10 @@ const SB_ANON     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const CONTACT     = 'autopoint.service@proton.me';
 
 // ══ INIT SUPABASE ════════════════════════════════════════════
-const DEMO = SB_URL === 'VOTRE_URL_SUPABASE';
+const DEMO = false; // Mode réel forcé
 let sb = null;
-if (!DEMO) {
-  try { sb = window.supabase.createClient(SB_URL, SB_ANON); }
-  catch(e) { console.error('Supabase init failed:', e); }
-}
-if (DEMO) console.warn('⚠️ Mode démo — configurez SB_URL et SB_ANON');
+try { sb = window.supabase.createClient(SB_URL, SB_ANON); }
+catch(e) { console.error('Supabase init failed:', e); }
 
 // ══ SESSION ══════════════════════════════════════════════════
 const SS = 'ap_v5_sess';
@@ -639,7 +649,24 @@ const say = msg => {
   el.textContent = ''; setTimeout(() => el.textContent = msg, 50);
 };
 
-// ══ NAVIGATION ═══════════════════════════════════════════════
+// ══ NAVIGATION GLOBALE ET BOUTONS ════════════════════════════
+function updateNavUI() {
+  const s = getSession();
+  const bLog = document.getElementById('btn-nav-login');
+  const bReg = document.getElementById('btn-nav-reg');
+  const bOut = document.getElementById('btn-nav-logout');
+  
+  if (s) {
+    if(bLog) bLog.style.display = 'none';
+    if(bReg) bReg.style.display = 'none';
+    if(bOut) bOut.style.display = 'inline-flex';
+  } else {
+    if(bLog) bLog.style.display = 'inline-flex';
+    if(bReg) bReg.style.display = 'inline-flex';
+    if(bOut) bOut.style.display = 'none';
+  }
+}
+
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
   document.getElementById('page-' + n).classList.add('on');
@@ -647,6 +674,20 @@ function showPage(n) {
 }
 function scrollToAuth() {
   setTimeout(() => document.getElementById('auth')?.scrollIntoView({ behavior: 'smooth' }), 120);
+}
+
+function handleChoisir(plan) {
+  const s = getSession();
+  selectPlan(plan);
+  if (s && !s.is_admin) {
+    openModal('payment');
+  } else if (s && s.is_admin) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showPage('home');
+    switchTab('reg');
+    scrollToAuth();
+  }
 }
 
 // ══ TABS ══════════════════════════════════════════════════════
@@ -717,13 +758,8 @@ async function applyPromo() {
   const code = document.getElementById('r-promo')?.value.trim().toUpperCase();
   if (!code) { showPromoFb('Entrez un code.', false); return; }
 
-  let promo = null;
-  if (DEMO) {
-    promo = null;
-  } else {
-    const { data } = await sb.rpc('get_promo', { p_code: code });
-    promo = data;
-  }
+  const { data } = await sb.rpc('get_promo', { p_code: code });
+  let promo = data;
 
   if (!promo || !promo.active) { showPromoFb('Code invalide ou expiré.', false); return; }
   if (promo.max_uses > 0 && promo.uses >= promo.max_uses) { showPromoFb('Ce code est épuisé.', false); return; }
@@ -785,10 +821,6 @@ async function loadPaymentInstructions() {
   }
   
   if (!el) return;
-  if (DEMO) {
-    el.textContent = `Pour activer votre abonnement :\n\n1. Envoyez votre règlement à :\n   ${CONTACT}\n\n2. Mentionnez votre pseudo dans le message\n\n3. Formule mensuelle     : 10€/mois\n   Formule trimestrielle : 25€/trimestre\n\nVotre service sera activé sous 24h\naprès confirmation du paiement.\n\n🔒 Aucune donnée bancaire ne transite par AutoPoint.`;
-    return;
-  }
   const { data } = await sb.from('config').select('value').eq('key', 'payment_instructions').single();
   el.textContent = data?.value || `Contactez : ${CONTACT}`;
 }
@@ -803,8 +835,9 @@ function copyText(text, feedbackId) {
 }
 function copyAmount() {
   const s = getSession();
-  const amount = s?.plan_amount?.split(' ')[0] || '25€';
-  copyText(amount, 'copy-fb');
+  let amt = '10€';
+  if(s) amt = (s.plan === 'trimestriel' || s.plan_amount === '25€') ? '25€' : '10€';
+  copyText(amt, 'copy-fb');
 }
 function copyPseudo() {
   const s = getSession();
@@ -827,7 +860,7 @@ function nextPointing() {
 
 // ══ RPC WRAPPER ══════════════════════════════════════════════
 async function rpc(fn, params) {
-  if (DEMO || !sb) return { data: null, error: { message: 'Mode démo' } };
+  if (!sb) return { data: null, error: { message: 'Mode démo' } };
   return await sb.rpc(fn, params);
 }
 
@@ -864,13 +897,6 @@ async function doRegister() {
   if (!/^\d{4}$/.test(pin)) { showMsg('reg', '⚠️ Le PIN doit être exactement 4 chiffres.', 'err'); return; }
   if (!cgu)            { showMsg('reg', '⚠️ Vous devez accepter les CGU.', 'err'); return; }
 
-  if (DEMO) {
-    const u = { pseudo:ps, prenom:fn, nom:ln, email:em, login_guinot:gl, plan, plan_label:planLabel, plan_amount:planAmount, statut_bot:'inactif', date_fin_abonnement:null, absences:[], is_admin:false, _pwd:pw };
-    setSession(u);
-    openModal('payment');
-    return;
-  }
-
   const { data, error } = await rpc('register_user', {
     p_pseudo:ps, p_prenom:fn, p_nom:ln, p_email:em,
     p_login_guinot:gl, p_mdp_guinot:gp,
@@ -886,7 +912,7 @@ async function doRegister() {
   }
 
   // AJOUT : Auto-activation si 0€
-  if (final === 0 && !DEMO) {
+  if (final === 0) {
     const planDays = plan === 'trimestriel' ? 90 : 30;
     const expDate = addDays(new Date(), planDays).toISOString();
     await sb.from('users').update({statut_bot: 'actif', date_fin_abonnement: expDate}).eq('pseudo', ps);
@@ -895,6 +921,8 @@ async function doRegister() {
     setSession({ pseudo:ps, prenom:fn, nom:ln, email:em, login_guinot:gl, plan, plan_label:planLabel, plan_amount:planAmount, statut_bot:'inactif', date_fin_abonnement:null, absences:[], is_admin:false, _pwd:pw });
   }
   
+  updateNavUI();
+  showClientDash(getSession());
   openModal('payment');
 }
 
@@ -904,8 +932,6 @@ async function doLogin() {
   const pw = document.getElementById('l-pw').value;
   if (!ps || !pw) { showMsg('login', '⚠️ Remplissez tous les champs.', 'err'); return; }
 
-  if (DEMO) { showMsg('login', '⚠️ Mode démo — configurez Supabase.', 'wrn'); return; }
-
   const { data, error } = await rpc('login_with_pseudo', { p_pseudo:ps, p_mdp_plain:pw });
 
   if (error || !data?.success) {
@@ -914,8 +940,9 @@ async function doLogin() {
     return;
   }
 
-  const sessionData = { ...data, _pwd: pw }; // Stockage sécurisé du mot de passe pour les actions RPC
+  const sessionData = { ...data, _pwd: pw }; 
   setSession(sessionData);
+  updateNavUI();
   if (data.is_admin) { showAdminDash(); return; }
   showClientDash(data);
 }
@@ -930,8 +957,6 @@ async function doResetPin() {
   if (pw.length < 8)          { showMsg('reset', '⚠️ Mot de passe trop court.', 'err'); return; }
   if (pw !== pw2)             { showMsg('reset', '⚠️ Les mots de passe ne correspondent pas.', 'err'); return; }
   if (!/^\d{4}$/.test(pin))  { showMsg('reset', '⚠️ Le PIN doit être 4 chiffres.', 'err'); return; }
-
-  if (DEMO) { showMsg('reset', '⚠️ Mode démo — configurez Supabase.', 'wrn'); return; }
 
   const { data, error } = await rpc('reset_password_with_pin', { p_pseudo:ps, p_pin:pin, p_new_mdp:pw });
 
@@ -953,19 +978,14 @@ async function doResetPin() {
 
 // ══ CLIENT DASHBOARD ══════════════════════════════════════════
 function showClientDash(u) {
-  // Masquage des boutons de navigation "Connexion / Inscription"
-  const btnL = document.getElementById('btn-nav-login');
-  const btnR = document.getElementById('btn-nav-reg');
-  if (btnL) btnL.style.display = 'none';
-  if (btnR) btnR.style.display = 'none';
-
   TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
+  
+  // MASQUER LES ONGLETS CONNEXION / INSCRIPTION
+  const tabsRow = document.querySelector('.tabs-row'); if(tabsRow) tabsRow.style.display = 'none';
+  const secBar = document.querySelector('.sec-bar'); if(secBar) secBar.style.display = 'none';
+
   document.getElementById('client-dash').style.display = '';
   const ad = document.getElementById('admin-dash'); if (ad) ad.style.display = 'none';
-  const tabLogin = document.getElementById('tab-login');
-  const tabReg   = document.getElementById('tab-reg');
-  if (tabLogin) tabLogin.classList.remove('on');
-  if (tabReg)   tabReg.classList.remove('on');
 
   document.getElementById('cd-name').textContent    = u.prenom || u.pseudo;
   document.getElementById('cd-pseudo').textContent  = u.pseudo;
@@ -985,7 +1005,6 @@ function showClientDash(u) {
     document.getElementById('cd-lbl').textContent  = 'compte gratuit';
     document.getElementById('pb-fill').style.width = '100%';
     document.getElementById('cd-exp').textContent  = '';
-    document.getElementById('btn-renew').style.display = 'none';
   } else if (u.date_fin_abonnement) {
     const left  = daysLeft(u.date_fin_abonnement);
     const total = u.plan === 'mensuel' ? 30 : 90;
@@ -995,13 +1014,13 @@ function showClientDash(u) {
     document.getElementById('pb-fill').style.width = pct + '%';
     document.getElementById('pb-wrap').setAttribute('aria-valuenow', pct);
     document.getElementById('cd-exp').textContent  = 'Expiration le ' + fmtDate(u.date_fin_abonnement);
-    document.getElementById('btn-renew').style.display = (left <= 7 || u.statut_bot !== 'actif') ? '' : 'none';
   } else {
     document.getElementById('cd-days').textContent = '—';
     document.getElementById('cd-lbl').textContent  = "en attente d'activation";
     document.getElementById('pb-fill').style.width = '0%';
-    document.getElementById('btn-renew').style.display = 'none';
   }
+
+  document.getElementById('btn-renew').style.display = '';
 
   refreshAbsenceBtns(u.absences || []);
   loadMessages('client'); // Charger les messages du chat client
@@ -1017,7 +1036,6 @@ async function updateClientCreds() {
   const gp = document.getElementById('uc-gp').value;
   
   if(!curr) return showMsg('cred', 'Mot de passe actuel requis !', 'err');
-  if(DEMO) return showMsg('cred', 'Mise à jour simulée (Démo)', 'ok');
   
   const {data, error} = await rpc('client_update_credentials', {
     p_pseudo: s.pseudo, p_current_mdp: curr, p_new_auto_mdp: ap, p_new_g_login: gl, p_new_g_mdp: gp
@@ -1046,16 +1064,6 @@ async function toggleAbsence(session) {
   const s = getSession(); if (!s) return;
   const today = new Date().toISOString().split('T')[0];
 
-  if (DEMO) {
-    const abs = [...(s.absences || [])];
-    const idx = abs.findIndex(a => a.date === today && a.session === session);
-    if (idx >= 0) abs.splice(idx, 1); else abs.push({ date: today, session });
-    const updated = { ...s, absences: abs };
-    setSession(updated); refreshAbsenceBtns(abs);
-    say(idx >= 0 ? 'Absence supprimée' : 'Absence déclarée');
-    return;
-  }
-
   const { data, error } = await rpc('toggle_absence', { p_pseudo:s.pseudo, p_date:today, p_session:session });
   if (error || !data?.success) { say('Erreur lors de la mise à jour'); return; }
   const updated = { ...s, absences: data.absences };
@@ -1076,8 +1084,6 @@ async function doDeleteAccount() {
   const s  = getSession(); if (!s) return;
   if (!pw) { showMsg('delete', '⚠️ Entrez votre mot de passe.', 'err'); return; }
 
-  if (DEMO) { clearSess(); closeModal('delete'); switchTab('login'); say('Compte supprimé (démo)'); return; }
-
   const { data, error } = await rpc('delete_own_account', { p_pseudo:s.pseudo, p_mdp_plain:pw });
   if (error || !data?.success) {
     showMsg('delete', '❌ ' + (data?.error === 'wrong_password' ? 'Mot de passe incorrect.' : 'Erreur.'), 'err');
@@ -1091,11 +1097,10 @@ async function doDeleteAccount() {
 // ══ DÉCONNEXION ════════════════════════════════════════════════
 function doLogout() { 
   clearSess(); 
-  // Réafficher les boutons
-  const btnL = document.getElementById('btn-nav-login');
-  const btnR = document.getElementById('btn-nav-reg');
-  if (btnL) btnL.style.display = '';
-  if (btnR) btnR.style.display = '';
+  updateNavUI();
+  
+  const tabsRow = document.querySelector('.tabs-row'); if(tabsRow) tabsRow.style.display = 'grid';
+  const secBar = document.querySelector('.sec-bar'); if(secBar) secBar.style.display = 'flex';
   
   switchTab('login'); 
   say('Déconnecté'); 
@@ -1103,18 +1108,11 @@ function doLogout() {
 
 // ══ ADMIN DASHBOARD ════════════════════════════════════════════
 async function showAdminDash() {
-  // Masquage des boutons de navigation "Connexion / Inscription"
-  const btnL = document.getElementById('btn-nav-login');
-  const btnR = document.getElementById('btn-nav-reg');
-  if (btnL) btnL.style.display = 'none';
-  if (btnR) btnR.style.display = 'none';
-
   TAB_IDS.forEach(id => { const p = document.getElementById('pnl-' + id); if (p) p.style.display = 'none'; });
   document.getElementById('client-dash').style.display = 'none';
-  const tabLogin = document.getElementById('tab-login');
-  const tabReg   = document.getElementById('tab-reg');
-  if (tabLogin) tabLogin.classList.remove('on');
-  if (tabReg)   tabReg.classList.remove('on');
+  
+  const tabsRow = document.querySelector('.tabs-row'); if(tabsRow) tabsRow.style.display = 'none';
+  const secBar = document.querySelector('.sec-bar'); if(secBar) secBar.style.display = 'none';
 
   let div = document.getElementById('admin-dash');
   if (!div) {
@@ -1127,27 +1125,22 @@ async function showAdminDash() {
 
   let allUsers = [], allPromos = [], currentPaymentText = "Contactez : " + CONTACT;
 
-  if (DEMO) {
-    allUsers  = JSON.parse(localStorage.getItem('ap_demo_users')  || '[]');
-    allPromos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
-  } else {
-    // AJOUT : Sélection de mdp_guinot et promo_code_used pour l'admin
-    const [ru, rp, rpay] = await Promise.all([
-      sb.from('users').select('id,pseudo,prenom,nom,email,login_guinot,mdp_guinot,plan_amount,promo_code_used,statut_bot,plan_label,date_fin_abonnement').neq('is_admin', true).order('created_at', { ascending: false }),
-      sb.from('promo_codes').select('*').order('created_at', { ascending: false }),
-      sb.from('config').select('value').eq('key', 'payment_instructions').single()
-    ]);
-    allUsers  = ru.data  || [];
-    allPromos = rp.data  || [];
-    if (rpay.data) currentPaymentText = rpay.data.value;
-  }
+  // AJOUT : Sélection de mdp_guinot et promo_code_used pour l'admin
+  const [ru, rp, rpay] = await Promise.all([
+    sb.from('users').select('id,pseudo,prenom,nom,email,login_guinot,mdp_guinot,plan_amount,promo_code_used,statut_bot,plan_label,date_fin_abonnement').neq('is_admin', true).order('created_at', { ascending: false }),
+    sb.from('promo_codes').select('*').order('created_at', { ascending: false }),
+    sb.from('config').select('value').eq('key', 'payment_instructions').single()
+  ]);
+  allUsers  = ru.data  || [];
+  allPromos = rp.data  || [];
+  if (rpay.data) currentPaymentText = rpay.data.value;
 
   const actifs  = allUsers.filter(u => u.statut_bot === 'actif' || u.statut_bot === 'gratuit').length;
   const attente = allUsers.filter(u => u.statut_bot === 'inactif').length;
   const exp7    = allUsers.filter(u => u.date_fin_abonnement && daysLeft(u.date_fin_abonnement) <= 7 && daysLeft(u.date_fin_abonnement) > 0).length;
 
   const rows = allUsers.length === 0
-    ? '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:28px;">Aucun utilisateur</td></tr>'
+    ? '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px;">Aucun utilisateur</td></tr>'
     : allUsers.map(u => {
         const left = u.statut_bot === 'gratuit' ? '∞' : (u.date_fin_abonnement ? daysLeft(u.date_fin_abonnement) : '—');
         const lc   = u.statut_bot === 'gratuit' ? '' : (typeof left === 'number' ? (left > 7 ? 'ok' : left > 0 ? 'wrn' : 'exp') : '');
@@ -1156,16 +1149,25 @@ async function showAdminDash() {
           : (u.statut_bot === 'actif' ? '<span class="sbadge act">Actif</span>' : '<span class="sbadge exp">Inactif</span>');
         
         return `<tr>
-          <td class="td-name">${u.prenom || ''} ${u.nom || ''}</td>
-          <td><small>${u.pseudo}</small></td>
-          <td><small>${u.email}</small></td>
-          <td style="font-family:monospace; font-size:0.75rem;">L: <span style="color:var(--blue2);">${u.login_guinot || '—'}</span><br>P: <span style="color:var(--amber);">${u.mdp_guinot || '—'}</span></td>
-          <td><small>${u.plan_amount || '—'}<br><span style="color:var(--green);">${u.promo_code_used || ''}</span></small></td>
+          <td class="td-name">
+            ${u.prenom || ''} ${u.nom || ''}<br/>
+            <small style="color:var(--muted);">${u.pseudo}</small><br/>
+            <small style="color:var(--muted);">${u.email}</small>
+          </td>
+          <td style="font-family:monospace; font-size:0.75rem;">
+             <span style="color:var(--blue2);">L: ${u.login_guinot || '—'}</span><br>
+             <span style="color:var(--amber);">P: ${u.mdp_guinot || '—'}</span>
+          </td>
+          <td>
+             <small>${u.plan_amount || '—'}</small><br>
+             <span style="color:var(--green);font-size:0.75rem;">${u.promo_code_used || ''}</span>
+          </td>
           <td>${st}</td>
           <td class="td-days ${lc}">${left}${typeof left === 'number' ? 'j' : ''}</td>
           <td><small>${fmtDate(u.date_fin_abonnement)}</small></td>
           <td class="td-acts">
-            <button class="btn btn-sm btn-p" onclick="openActivateModal('${u.pseudo}')">Activer</button>
+            <button class="btn btn-sm btn-c" onclick="openActivateModal('${u.pseudo}')" title="Activation Initiale">Activer</button>
+            <button class="btn btn-sm btn-p" onclick="openTimeModal('${u.pseudo}')" title="+/- Mois">Temps</button>
             <button class="btn btn-sm btn-r" onclick="deactivateUser('${u.pseudo}')">Désactiver</button>
           </td></tr>`;
       }).join('');
@@ -1188,7 +1190,6 @@ async function showAdminDash() {
   div.innerHTML = `
     <div class="admin-head">
       <h2>🛡️ Panneau Admin</h2>
-      <button class="btn btn-r btn-sm" onclick="doLogout()">Déconnexion</button>
     </div>
     <div class="admin-stats">
       <div class="astat"><span class="astat-n">${allUsers.length}</span><span class="astat-l">Total</span></div>
@@ -1209,7 +1210,7 @@ async function showAdminDash() {
       </div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Nom</th><th>Pseudo</th><th>Email</th><th>ID Guinot</th><th>Paiement</th><th>Statut</th><th>Jours</th><th>Expiration</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Infos</th><th>Identifiants Guinot</th><th>Paiement & Promo</th><th>Statut</th><th>Jours</th><th>Expiration</th><th>Actions</th></tr></thead>
           <tbody id="atbody">${rows}</tbody>
         </table>
       </div>
@@ -1232,7 +1233,7 @@ async function showAdminDash() {
     <div id="as-pay" class="admin-section">
       <div class="promo-admin-card">
         <h3>Modifier les instructions de paiement</h3>
-        <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">Ces instructions s'affichent aux clients après leur inscription pour qu'ils puissent vous payer. L'action est sécurisée par votre session.</p>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">Ces instructions s'affichent aux clients après leur inscription. L'action est sécurisée par votre session.</p>
         <div class="field"><textarea id="admin-pay-text" rows="8" placeholder="Vos instructions..."></textarea></div>
         <button class="btn btn-p" onclick="updatePaymentInstructions()">💾 Sauvegarder les modifications</button>
         <div id="pay-msg" class="msg" style="margin-top:10px;"></div>
@@ -1278,11 +1279,6 @@ async function updatePaymentInstructions() {
 
   if (!text) { showEl(msgEl, 'Le texte ne peut pas être vide.', 'err'); return; }
 
-  if (DEMO) {
-    showEl(msgEl, '✅ Sauvegardé (Mode Démo)', 'ok');
-    return;
-  }
-
   const s = getSession();
   const { data, error } = await rpc('admin_update_payment', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_new_text: text });
 
@@ -1293,7 +1289,7 @@ async function updatePaymentInstructions() {
   }
 }
 
-// ══ ACTIVATION ADMIN ══════════════════════════════════════════
+// ══ ACTIVATION INITIALE ADMIN ══════════════════════════════════════════
 let _actTarget = null;
 function openActivateModal(pseudo) {
   _actTarget = pseudo;
@@ -1304,20 +1300,6 @@ function openActivateModal(pseudo) {
 async function activateUser(plan) {
   if (!_actTarget) return;
   closeModal('activate');
-
-  if (DEMO) {
-    const users = JSON.parse(localStorage.getItem('ap_demo_users') || '[]');
-    const i = users.findIndex(u => u.pseudo === _actTarget);
-    if (i >= 0) {
-      users[i].statut_bot = plan === 'free' ? 'gratuit' : 'actif';
-      users[i].date_fin_abonnement = plan === 'free' ? null : addDays(new Date(), plan === 'mensuel' ? 30 : 90).toISOString();
-      localStorage.setItem('ap_demo_users', JSON.stringify(users));
-    }
-    say('Compte ' + _actTarget + ' activé (démo)');
-    _actTarget = null;
-    await showAdminDash();
-    return;
-  }
 
   const s = getSession();
   const { data, error } = await rpc('admin_activate', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_pseudo: _actTarget, p_plan: plan });
@@ -1330,18 +1312,32 @@ async function activateUser(plan) {
 async function deactivateUser(pseudo) {
   if (!confirm('Désactiver le compte de ' + pseudo + ' ?')) return;
 
-  if (DEMO) {
-    const users = JSON.parse(localStorage.getItem('ap_demo_users') || '[]');
-    const i = users.findIndex(u => u.pseudo === pseudo);
-    if (i >= 0) { users[i].statut_bot = 'inactif'; users[i].date_fin_abonnement = null; localStorage.setItem('ap_demo_users', JSON.stringify(users)); }
-    say('Compte ' + pseudo + ' désactivé (démo)');
-    await showAdminDash(); return;
-  }
-
   const s = getSession();
   const { data, error } = await rpc('admin_deactivate', { p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_pseudo: pseudo });
   if (error || !data?.success) say('Erreur désactivation'); else say('Compte ' + pseudo + ' désactivé');
   await showAdminDash();
+}
+
+// ══ GESTION TEMPS (+1/-1/+3/-3) ADMIN ═════════════════════════════════
+let _targetUser = null;
+function openTimeModal(pseudo) { 
+  _targetUser = pseudo; 
+  document.getElementById('mt-user').textContent = pseudo; 
+  openModal('time'); 
+}
+
+async function execTime(action) {
+  const s = getSession();
+
+  const { data, error } = await rpc('admin_update_time', {
+    p_caller_pseudo: s.pseudo, p_caller_mdp: s._pwd, p_target_pseudo: _targetUser, p_action: action
+  });
+
+  if (error || !data?.success) showMsg('mt-msg', 'Erreur ou accès refusé', 'err');
+  else {
+    showMsg('mt-msg', '✅ Temps mis à jour !', 'ok');
+    setTimeout(() => { closeModal('time'); loadAdminData(); }, 1500);
+  }
 }
 
 // ══ PROMO ADMIN ════════════════════════════════════════════════
@@ -1357,16 +1353,6 @@ async function createPromo() {
   if (!val || val <= 0) { showEl(msgEl, 'Valeur invalide.', 'err'); return; }
   if (type === 'pct' && val > 100) { showEl(msgEl, 'Pourcentage max 100%.', 'err'); return; }
 
-  if (DEMO) {
-    const promos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
-    if (promos.find(p => p.code === code)) { showEl(msgEl, 'Code déjà existant.', 'err'); return; }
-    promos.push({ code, type, value: val, plan, max_uses: max, uses: 0, active: true });
-    localStorage.setItem('ap_demo_promos', JSON.stringify(promos));
-    showEl(msgEl, `✅ Code "${code}" créé !`, 'ok');
-    setTimeout(() => showAdminDash(), 800);
-    return;
-  }
-
   const { error } = await sb.from('promo_codes').insert({ code, type, value: val, plan, max_uses: max, uses: 0, active: true });
   if (error) { showEl(msgEl, error.code === '23505' ? 'Code déjà existant.' : 'Erreur création.', 'err'); return; }
   showEl(msgEl, `✅ Code "${code}" créé !`, 'ok');
@@ -1374,12 +1360,6 @@ async function createPromo() {
 }
 
 async function togglePromo(code) {
-  if (DEMO) {
-    const promos = JSON.parse(localStorage.getItem('ap_demo_promos') || '[]');
-    const i = promos.findIndex(p => p.code === code);
-    if (i >= 0) { promos[i].active = !promos[i].active; localStorage.setItem('ap_demo_promos', JSON.stringify(promos)); }
-    await showAdminDash(); return;
-  }
   const { data } = await sb.from('promo_codes').select('active').eq('code', code).single();
   await sb.from('promo_codes').update({ active: !data?.active }).eq('code', code);
   await showAdminDash();
@@ -1397,7 +1377,6 @@ async function sendMsg(sender) {
   if(!txt) return;
   
   const targetPseudo = sender === 'client' ? s.pseudo : _chatTarget;
-  if(DEMO) { input.value = ''; return; }
 
   await rpc('secure_send_message', { p_pseudo: targetPseudo, p_mdp: s._pwd, p_sender: sender, p_content: txt });
   input.value = '';
@@ -1407,7 +1386,6 @@ async function sendMsg(sender) {
 }
 
 async function loadMessages(view, targetPseudo = null) {
-  if(DEMO) return;
   const s = getSession();
   const p = view === 'client' ? s.pseudo : targetPseudo;
   const box = document.getElementById(view === 'client' ? 'client-chat' : 'admin-chat');
@@ -1433,7 +1411,6 @@ async function loadMessages(view, targetPseudo = null) {
 }
 
 async function loadAdminMessages() {
-  if(DEMO) return;
   const s = getSession();
   const list = document.getElementById('adm-user-list');
   
@@ -1469,6 +1446,7 @@ async function openAdminChat(pseudo) {
 
 // ══ INIT ══════════════════════════════════════════════════════
 (async () => {
+  updateNavUI();
   const s = getSession(); if (!s) return;
   if (s.is_admin) { showAdminDash(); return; }
   showClientDash(s);
